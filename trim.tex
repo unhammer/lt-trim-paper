@@ -69,7 +69,9 @@ if ``fishes'' were unknown to both dictionaries, the output would be
 would be ``@fish''. Given ``*fishes'', a post-editor who knows both
 languages can immediately see what the original was, while the
 half-translated ``@fish'' hides the number information in the source
-text. Even worse, some languages inflect verbs for negation, where the
+text. 
+
+Even worse, some languages inflect verbs for negation, where the
 half-translated lemma would hide the fact that the meaning is
 negative. And as mentioned above, a word not known to the bilingual
 FST can not have its tags translated (or translated correctly) either;
@@ -91,6 +93,9 @@ lot of redundancy and duplicated effort.
 % shared since it's rather much bureaucracy to depend on apertium-foo
 % when it's only for an rlx/prob file.
 
+However, finite state machines can be intersected with one another.
+
+...
 
 \section{Discussion and outlook}
 \section*{Acknowledgements}
