@@ -9,43 +9,92 @@
 \usepackage{hyperref}
 \author{NN\\  X \\ X \\  X \\  {\tt \small   X@X}}
 
-\title{Trimming Language-Pair Independent FST's in Apertium}
-% Avoiding Redundancy in Apertium FST's?
+\title{Trimming FST's to Avoid Dictionary Redundancy in Apertium} % TITLE TODO ugh
 
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-  A Finite State Transducers (FSTs) used as an analyser, whose output
-  is input to another FST, may have entries that don't pass through
-  the second FST. We describe the development of a tool to \emph{trim}
-  such entries.
+  A Finite State Transducer (FST) used as an analyser, whose output is
+  input to another FST, may have entries that don't pass through the
+  second FST. We describe the development of a tool to \emph{trim}
+  such entries in the \texttt{lttoolbox} package used in the Apertium
+  machine translation platform.
 \end{abstract}
 
-\section{Introduction}
-Apertium is a rule-based machine translation platform which uses
-Finite State Transducers for morphological analysis, bilingual
-dictionary lookup and generation of surface forms.
+\section{Introduction and background}
+Apertium is a rule-based machine translation platform, where the data
+and tools are released under a Free and Open Source license (primarily
+GNU GPL). Apertium translators use Finite State Transducers (FST's)
+for morphological analysis, bilingual dictionary lookup and generation
+of surface forms; most language pairs\footnote{A \emph{language pair}
+  is a set of resources to translate between a certain set of
+  languages in Apertium, e.g. Basque↔Spanish.} created with Apertium
+use the \texttt{lttoolbox} FST library for compiling XML dictionaries
+into binary FST's and for processing text with such FST's.
 
-Most translators created with Apertium use the \texttt{lttoolbox}
-library for compiling XML dictionaries into binary FST's and for
-processing text with such FST's. The bilingual dictionary transfers
-not only lemmas, but tags, for example translating the tags noun
-feminine into noun masculine.
+
+Translation with Apertium works as a pipeline, where each
+\emph{module} processes some text and feeds its output as input to the
+next module. First, a surface form like ``fishes'' passes through the
+\textbf{analyser} FST module, giving a set of analyses like
+``fish.n.pl/fish.vblex.pres'', or, if it is unknown, simply
+``*fishes''. One or more \textbf{disambiguation} modules select which
+of the analyses is the correct one. The \textbf{pretransfer} module
+does some minor formal changes to do with multiwords.
+
+Then a disambiguated analysis like ``fish.n.pl'' passes through the
+\textbf{bilingual} FST. Using English→Norwegian as an example, we
+would get ``fisk.n.m.pl'' if the bilingual FST had a matching entry,
+or simply ``@fish.n.pl'' if it was unknown in that dictionary. So a
+known entry may get changes to both lemma (``fish''→``fisk'') and tags
+(``n.pl''→``n.m.pl'') by the bilingual FST.
+
+The output of the bilingual FST is then passed to the
+\textbf{structural transfer} module (which may change word order,
+ensure determiner agreement, etc.), and finally a \textbf{generator}
+FST which turns analyses like ``fisk.n.m.pl'' into forms like
+``fiskar''. Generation is simply the reverse of analysis; the
+dictionary which was compiled into a generator for Norwegian can also
+be used as an analyser for Norwegian, by switching the compilation
+direction.
+
+\subsection{So what's the problem}
 
 If a word is in the analyser, but not in the bilingual translation
-dictionary, the transfer module may apply the wrong tags . So until
-very recently, each language pair / translator created with Apertium
-would have its own set of monolingual data resources. This lead to a
-lot of reduncancy, but was necessary in order to avoid
-non-translatable strings getting half-way translated and possibly
-messing up the context.
+dictionary, certain difficulties arise. As the example above showed,
+if ``fishes'' were unknown to both dictionaries, the output would be
+``*fishes'', while if it were unknown to only the second, the output
+would be ``@fish''. Given ``*fishes'', a post-editor who knows both
+languages can immediately see what the original was, while the
+half-translated ``@fish'' hides the number information in the source
+text. Even worse, some languages inflect verbs for negation, where the
+half-translated lemma would hide the fact that the meaning is
+negative. And as mentioned above, a word not known to the bilingual
+FST can not have its tags translated (or translated correctly) either;
+when the transfer module tries to use the half-translated tags to
+determine agreement, the \emph{context} of the half-translated word
+may have its meaning skewed as well.
+
+Trying to write transfer rules to deal with half-translated tags also
+increases the complexity of transfer rules. For example, if any noun
+can be missing its gender, that's one more exception to all rules that
+apply gender agreement.
+
+Due to these issues, most language pairs in Apertium until recently
+had a separate copy of each monolingual dictionary, manually trimmed
+to match the entries of the bilingual dictionary. This lead to a
+lot of redundancy and duplicated effort.
+
+% Also, other monolingual resources, like disambiguator data, were not
+% shared since it's rather much bureaucracy to depend on apertium-foo
+% when it's only for an rlx/prob file.
 
 
 \section{Discussion and outlook}
 \section*{Acknowledgements}
-Development was funded as part of the Google
+Part of the development was funded by the Google
 Code-In\footnote{\href{http://code.google.com/soc/}{http://code.google.com/soc/}
 } programme.
 
