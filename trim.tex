@@ -84,10 +84,12 @@ increases the complexity of transfer rules. For example, if any noun
 can be missing its gender, that's one more exception to all rules that
 apply gender agreement.
 
-Due to these issues, most language pairs in Apertium until recently
-had a separate copy of each monolingual dictionary, manually trimmed
-to match the entries of the bilingual dictionary. This lead to a
-lot of redundancy and duplicated effort.
+Due to these issues, most language pairs in Apertium have a separate copy of
+each monolingual dictionary, manually trimmed to match the entries of the
+bilingual dictionary. This of course leads to a lot of redundancy and
+duplicated effort; as an example, there are currently (as of revision 49929)
+twelve Spanish monolingual dictionaries, with sizes varying from 36798 lines to
+204447 lines.
 
 % Also, other monolingual resources, like disambiguator data, were not
 % shared since it's rather much bureaucracy to depend on apertium-foo
@@ -97,7 +99,7 @@ However, finite state machines can be intersected with one another.
 
 ...
 
-\section{Discussion and outlook}
+\section{Discussion}
 \section*{Acknowledgements}
 Part of the development was funded by the Google
 Code-In\footnote{\href{http://code.google.com/soc/}{http://code.google.com/soc/}
