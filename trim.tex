@@ -7,7 +7,7 @@
 \usepackage{latexsym}
 
 \usepackage{hyperref}
-\author{NN\\  X \\ X \\  X \\  {\tt \small   X@X} \And  NN \\  X \\  X \\  X \\    {\tt \small  X@X}}
+\author{NN\\  X \\ X \\  X \\  {\tt \small   X@X}}
 
 \title{Trimming Language-Pair Independent FST's in Apertium}
 % Avoiding Redundancy in Apertium FST's?
@@ -28,6 +28,19 @@ Apertium is a rule-based machine translation platform which uses
 Finite State Transducers for morphological analysis, bilingual
 dictionary lookup and generation of surface forms.
 
+Most translators created with Apertium use the \texttt{lttoolbox}
+library for compiling XML dictionaries into binary FST's and for
+processing text with such FST's. The bilingual dictionary transfers
+not only lemmas, but tags, for example translating the tags noun
+feminine into noun masculine.
+
+If a word is in the analyser, but not in the bilingual translation
+dictionary, the transfer module may apply the wrong tags . So until
+very recently, each language pair / translator created with Apertium
+would have its own set of monolingual data resources. This lead to a
+lot of reduncancy, but was necessary in order to avoid
+non-translatable strings getting half-way translated and possibly
+messing up the context.
 
 
 \section{Discussion and outlook}
