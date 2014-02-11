@@ -1,0 +1,43 @@
+\documentclass[11pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{times}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[small,bf]{caption}
+\usepackage{latexsym}
+
+\usepackage{hyperref}
+\author{NN\\  X \\ X \\  X \\  {\tt \small   X@X} \And  NN \\  X \\  X \\  X \\    {\tt \small  X@X}}
+
+\title{Trimming Language-Pair Independent FST's in Apertium}
+% Avoiding Redundancy in Apertium FST's?
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  A Finite State Transducers (FSTs) used as an analyser, whose output
+  is input to another FST, may have entries that don't pass through
+  the second FST. We describe the development of a tool to \emph{trim}
+  such entries.
+\end{abstract}
+
+\section{Introduction}
+Apertium is a rule-based machine translation platform which uses
+Finite State Transducers for morphological analysis, bilingual
+dictionary lookup and generation of surface forms.
+
+
+
+\section{Discussion and outlook}
+\section*{Acknowledgements}
+Development was funded as part of the Google
+Code-In\footnote{\href{http://code.google.com/soc/}{http://code.google.com/soc/}
+} programme.
+
+
+\bibliographystyle{apalike}
+\bibliography{apertium}
+
+\end{document}
