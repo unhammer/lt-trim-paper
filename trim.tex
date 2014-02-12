@@ -5,11 +5,15 @@
 
 % \usepackage[utf8x]{inputenc}
 % \usepackage{times}
-% \usepackage{natbib}
 % \usepackage{url}
 % \usepackage[small,bf]{caption}
 % \usepackage{latexsym}
-% \usepackage{hyperref}
+\usepackage{hyperref}
+
+\newcommand{\ana}[1]{\texttt{#1}}
+\newcommand{\f}[1]{`#1'}
+\newcommand{\tool}[1]{\texttt{#1}}
+
 
 \title{FST Intersection: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
 
@@ -23,7 +27,7 @@
   A Finite State Transducer (FST) used as an analyser, whose output is
   input to another FST, may have entries that don't pass through the
   second FST. We describe the development of a tool to \emph{trim}
-  such entries in the \texttt{lttoolbox} package used in the Apertium
+  such entries in the \tool{lttoolbox} package used in the Apertium
   machine translation platform.
 }
 
@@ -33,24 +37,24 @@
 
 \section{Introduction and background}
 
-Apertium\cite{forcada2011afp} is a rule-based machine translation
+Apertium \cite{forcada2011afp} is a rule-based machine translation
 platform, where the data and tools are released under a Free and Open
 Source license (primarily GNU GPL). Apertium translators use Finite
 State Transducers (FST's) for morphological analysis, bilingual
 dictionary lookup and generation of surface forms; most language
 pairs\footnote{A \emph{language pair} is a set of resources to
-    translate between a certain set of languages in Apertium, e.g.
-    Basque↔Spanish.} created with Apertium use the \texttt{lttoolbox} FST
-library for compiling XML dictionaries into binary FST's and for
+  translate between a certain set of languages in Apertium, e.g.
+  Basque↔Spanish.} created with Apertium use the \tool{lttoolbox}
+FST library for compiling XML dictionaries into binary FST's and for
 processing text with such FST's.
 
-
+\subsection{The Apertium pipeline}
 Translation with Apertium works as a pipeline, where each
 \emph{module} processes some text and feeds its output as input to the
-next module. First, a surface form like ``fishes'' passes through the
+next module. First, a surface form like \f{fishes} passes through the
 \textbf{analyser} FST module, giving a set of analyses like
-``fish.n.pl/fish.vblex.pres'', or, if it is unknown, simply
-``*fishes''. Tokenisation is done during analysis, letting the FST
+\ana{fish.n.pl/fish.vblex.pres}, or, if it is unknown, simply
+\ana{*fishes}. Tokenisation is done during analysis, letting the FST
 decide in a left-right longest match fashion which words are tokens.
 The analyser is technically the union of several FST's, each marked
 for whether they contain entries which are tokenised in the regular
@@ -63,51 +67,51 @@ After analysis, one or more \textbf{disambiguation} modules select
 which of the analyses is the correct one. The \textbf{pretransfer}
 module does some minor formal changes to do with multiwords.
 
-Then a disambiguated analysis like ``fish.n.pl'' passes through the
+Then a disambiguated analysis like \ana{fish.n.pl} passes through the
 \textbf{bilingual} FST. Using English→Norwegian as an example, we
-would get ``fisk.n.m.pl'' if the bilingual FST had a matching entry,
-or simply ``@fish.n.pl'' if it was unknown in that dictionary. So a
-known entry may get changes to both lemma (``fish''→``fisk'') and tags
-(``n.pl''→``n.m.pl'') by the bilingual FST. When processing input to
+would get \ana{fisk.n.m.pl} if the bilingual FST had a matching entry,
+or simply \ana{@fish.n.pl} if it was unknown in that dictionary. So a
+known entry may get changes to both lemma (\ana{fish}→\ana{fisk}) and tags
+(\ana{n.pl}→\ana{n.m.pl}) by the bilingual FST. When processing input to
 the bilingual FST, it is enough that the \emph{prefix} of the tag
 sequence matches, so a bilingual dictionary writer can specify that
-``fish.n'' goes to ``fisk.n.m'' and not bother with specifying all
+\ana{fish.n} goes to \ana{fisk.n.m} and not bother with specifying all
 inflectional tags like number, definiteness, tense, and so on.
 
 The output of the bilingual FST is then passed to the
 \textbf{structural transfer} module (which may change word order,
 ensure determiner agreement, etc.), and finally a \textbf{generator}
-FST which turns analyses like ``fisk.n.m.pl'' into forms like
-``fiskar''. Generation is the reverse of analysis; the dictionary
+FST which turns analyses like \ana{fisk.n.m.pl} into forms like
+\f{fiskar}. Generation is the reverse of analysis; the dictionary
 which was compiled into a generator for Norwegian can also be used as
 an analyser for Norwegian, by switching the compilation direction.
 
-A major feature of the \texttt{lttoolbox} FST package is the support
+A major feature of the \tool{lttoolbox} FST package is the support
 for multiwords and compounds. A \textbf{lexical unit} may be a simple
-noun like ``fish'', or a space-separated word like ``hairy frogfish''
+noun like \f{fish}, or a space-separated word like \f{hairy frogfish}
 (which will be analysed as one token, but otherwise have no formal
 differences from other words), or a multiword with inner inflection
-like ``takes out'' (analysed as ``take.vblex.pri.p3.sg\# out'' and
-then turned into ``take\# out.vblex.pri.p3.sg'' before bilingual
+like \f{takes out} (analysed as \ana{take.vblex.pri.p3.sg\# out} and
+then turned into \ana{take\# out.vblex.pri.p3.sg} before bilingual
 dictionary lookup), or a token which is actually two words which
 should be separated before bilingual dictionary lookup, like
-``they'll'' (analysed as ``prpers.prn.subj.p3.mf.pl+will.vaux.inf''
-and then split into ``prpers.prn.subj.p3.mf.pl'' and ``will.vaux.inf''
+\f{they'll} (analysed as \ana{prpers.prn.subj.p3.mf.pl+will.vaux.inf}
+and then split into \ana{prpers.prn.subj.p3.mf.pl} and \ana{will.vaux.inf}
 before bilingual dictionary lookup), or a combination of these three
 multiword types. 
 
 A word that can form a compound with words to the right has a
-``hidden'' tag compound-only-L, and a word that is able to be a
+\f{hidden} tag compound-only-L, and a word that is able to be a
 right-side of a compound or a word on its own has a tag compound-R.
 These hidden tags are not shown in the analysis output, but used by
-the FST processor. If the noun form ``frog'' is tagged compound-only-L
-and ``fishes'' is tagged compound-R, the \texttt{lttoolbox} FST
-processor will analyse ``frogfishes'' as a single compound token
+the FST processor. If the noun form \f{frog} is tagged compound-only-L
+and \f{fishes} is tagged compound-R, the \tool{lttoolbox} FST
+processor will analyse \f{frogfishes} as a single compound token
 (unless it was already in the dictionary as an explicit token), which
 is split into two tokens before bilingual dictionary lookup (so the
 full compound does not need to be specified in either dictionary).
 
-\subsection{So what's the problem}
+\subsection{The Problem: Redundant data}
 
 Ideally, when a monolingual dictionary for, say, English is created,
 that dictionary would be available for reuse unaltered (or with only
@@ -117,11 +121,11 @@ Apertium until recently.
 
 If a word is in the analyser, but not in the bilingual translation
 dictionary, certain difficulties arise. As the example above showed,
-if ``fishes'' were unknown to both dictionaries, the output would be
-``*fishes'', while if it were unknown to only the second, the output
-would be ``@fish''. Given ``*fishes'', a post-editor who knows both
+if \f{fishes} were unknown to both dictionaries, the output would be
+\ana{*fishes}, while if it were unknown to only the second, the output
+would be \ana{@fish}. Given \f{*fishes}, a post-editor who knows both
 languages can immediately see what the original was, while the
-half-translated ``@fish'' hides the number information in the source
+half-translated \ana{@fish} hides the number information in the source
 text. Removing features like number, definiteness or tense can skew
 meaning.  But it gets worse: Some languages inflect verbs for
 \emph{negation}, where the half-translated lemma would hide the fact
@@ -146,23 +150,23 @@ gender).
 Finally, there are issues with tokenisation and multiwords.
 Multiwords in Apertium are entries in the dictionaries that may
 consist of what would otherwise be several tokens. As an example, say
-you have ``take'' and ``out'' listed in your English dictionary, and
+you have \f{take} and \f{out} listed in your English dictionary, and
 they translate fine in isolation. Now, for Catalan we want to
-translate the phrasal verb ``take out'' into a single word ``treure'',
+translate the phrasal verb \f{take out} into a single word \f{treure},
 so we list it as a \emph{multiword with inner inflection} in the
-English dictionary. This makes any occurrence of forms of ``take out''
-get a single-token multiword analysis, e.g. ``takes out'' gets the
-analysis ``take.vblex.pri.p3.sg\# out''. But then the whole multiword
+English dictionary. This makes any occurrence of forms of \f{take out}
+get a single-token multiword analysis, e.g. \f{takes out} gets the
+analysis \ana{take.vblex.pri.p3.sg\# out}. But then the whole multiword
 \emph{has} to be in the bilingual dictionary if it is to be
 translated. If another language pair using the same English dictionary
-has both ``take'' and ``out'' in its bilingual dictionary, but not the
+has both \f{take} and \f{out} in its bilingual dictionary, but not the
 multiword, the individual words in isolation may be translated, but
 the whole string together will not be translated.
 
 Due to these issues, most language pairs in Apertium have a separate
 copy of each monolingual dictionary, manually \emph{trimmed} to match
 the entries of the bilingual dictionary; so in the example above, if
-``take out'' did not make sense to have in the bilingual dictionary,
+\f{take out} did not make sense to have in the bilingual dictionary,
 it would be removed from the copy of the monolingual dictionary. This
 of course leads to a lot of redundancy and duplicated effort; as an
 example, there are currently (as of SVN revision 49929) twelve Spanish
@@ -174,7 +178,7 @@ monolingual resources, like disambiguator data, is not shared, since
 the effort of copying files is less than the effort of letting one
 module depend on another for little gain.
 
-\subsection{A solution}
+\subsection{A Solution: Intersection}
 
 However, there is a way around these troubles. Finite state machines
 can be intersected with one another to produce a new finite state
@@ -186,11 +190,11 @@ a \emph{trimmed} FST. We call this \emph{trimming}.
 Some recent language pairs in Apertium use the alternative FST
 framework HFST \cite{linden2011hfst}\footnote{Partly due to available
 data in that formalism, partly due to features missing from
-\texttt{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
+\tool{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
 create a "prefixed" version of the bilingual FST, this is is the
 concatenation of the bilingual FST and the regular expression
 \texttt{.*}, ie. match any symbol zero or more times. Then the command
-\texttt{hfst-compose-intersect} on the analyser and the prefixed FST
+\tool{hfst-compose-intersect} on the analyser and the prefixed FST
 creates the FST where only those paths of the analyser remain where
 the right side of the analyser match the left side of the bilingual
 FST. The prefixing is necessary since, as mentioned above, the
@@ -202,19 +206,19 @@ features such as different types of tokenisation FST's, and it does
 not handle the fact that multiwords may split or change format before
 bilingual dictionary lookup. Also, HFST represents compounds with an
 optional transition from the end of the noun to the beginning of the
-noun dictionary -- so if ``frog.n'' and ``fish.n'' were in the
-analyser, but ``fish.n'' were missing from the bilingual FST,
-``frog.n+fish.n'' would remain in the trimmed FST since the prefix
-matches.  In addition, using HFST in language pairs whose data are all
-in \texttt{lttoolbox} format would introduce a new dependency.
+noun dictionary -- so if \ana{frog.n} and \ana{fish.n} were in the
+analyser, but \ana{fish.n} were missing from the bilingual FST,
+\ana{frog.n+fish.n} would remain in the trimmed FST since the prefix
+matches. In addition, using HFST in language pairs whose data are all
+in \tool{lttoolbox} format would introduce a new dependency.
 
-Thus we decided to create a new tool in \texttt{lttoolbox} called
-\texttt{lt-trim}, that trims an analyser using a bilingual FST
+Thus we decided to create a new tool in \tool{lttoolbox} called
+\tool{lt-trim}, that trims an analyser using a bilingual FST
 
 \section{Discussion}
 \section*{Acknowledgements}
 Part of the development was funded by the Google
-Code-In\footnote{\texttt{https://code.google.com/gci/}} programme.
+Code-In\footnote{\href{https://code.google.com/gci/}{https://code.google.com/gci/}} programme.
 
 \bibliographystyle{lrec2006}
 \bibliography{apertium}
