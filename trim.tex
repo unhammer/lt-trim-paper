@@ -1,32 +1,39 @@
 % vim: tw=70
-\documentclass[11pt]{article}
-\usepackage[utf8x]{inputenc}
-\usepackage{times}
-\usepackage{natbib}
-\usepackage{url}
-\usepackage[small,bf]{caption}
-\usepackage{latexsym}
+\documentclass[10pt, a4paper]{article}
+\usepackage{lrec2006}
+\usepackage{graphicx}
 
-\usepackage{hyperref}
-\author{NN\\  X \\ X \\  X \\  {\tt \small   X@X}}
+% \usepackage[utf8x]{inputenc}
+% \usepackage{times}
+% \usepackage{natbib}
+% \usepackage{url}
+% \usepackage[small,bf]{caption}
+% \usepackage{latexsym}
+% \usepackage{hyperref}
 
 \title{FST Intersection: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
 
-\begin{document}
+\name{Author1, Author2, Author3}
 
-\maketitle
+\address{ Affiliation1, Affiliation2, Affiliation3 \\
+               Address1, Address2, Address3 \\
+               author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\}
 
-\begin{abstract}
+\abstract{
   A Finite State Transducer (FST) used as an analyser, whose output is
   input to another FST, may have entries that don't pass through the
   second FST. We describe the development of a tool to \emph{trim}
   such entries in the \texttt{lttoolbox} package used in the Apertium
   machine translation platform.
-\end{abstract}
+}
+
+\begin{document}
+
+\maketitleabstract
 
 \section{Introduction and background}
 
-Apertium\citep{forcada2011afp} is a rule-based machine translation
+Apertium\cite{forcada2011afp} is a rule-based machine translation
 platform, where the data and tools are released under a Free and Open
 Source license (primarily GNU GPL). Apertium translators use Finite
 State Transducers (FST's) for morphological analysis, bilingual
@@ -177,7 +184,7 @@ with the input (or \textbf{left}) side of the bilingual FST, producing
 a \emph{trimmed} FST. We call this \emph{trimming}.
 
 Some recent language pairs in Apertium use the alternative FST
-framework HFST \citep{linden2011hfst}\footnote{Partly due to available
+framework HFST \cite{linden2011hfst}\footnote{Partly due to available
 data in that formalism, partly due to features missing from
 \texttt{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
 create a "prefixed" version of the bilingual FST, this is is the
@@ -207,11 +214,9 @@ Thus we decided to create a new tool in \texttt{lttoolbox} called
 \section{Discussion}
 \section*{Acknowledgements}
 Part of the development was funded by the Google
-Code-In\footnote{\href{http://code.google.com/soc/}{http://code.google.com/soc/}
-} programme.
+Code-In\footnote{\texttt{https://code.google.com/gci/}} programme.
 
-
-\bibliographystyle{apalike}
+\bibliographystyle{lrec2006}
 \bibliography{apertium}
 
 \end{document}
