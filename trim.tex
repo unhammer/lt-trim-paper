@@ -1,3 +1,4 @@
+% vim: tw=70
 \documentclass[11pt]{article}
 \usepackage[utf8x]{inputenc}
 \usepackage{times}
@@ -24,6 +25,7 @@
 \end{abstract}
 
 \section{Introduction and background}
+
 Apertium is a rule-based machine translation platform, where the data
 and tools are released under a Free and Open Source license (primarily
 GNU GPL). Apertium translators use Finite State Transducers (FST's)
@@ -55,10 +57,9 @@ The output of the bilingual FST is then passed to the
 \textbf{structural transfer} module (which may change word order,
 ensure determiner agreement, etc.), and finally a \textbf{generator}
 FST which turns analyses like ``fisk.n.m.pl'' into forms like
-``fiskar''. Generation is simply the reverse of analysis; the
-dictionary which was compiled into a generator for Norwegian can also
-be used as an analyser for Norwegian, by switching the compilation
-direction.
+``fiskar''. Generation is the reverse of analysis; the dictionary
+which was compiled into a generator for Norwegian can also be used as
+an analyser for Norwegian, by switching the compilation direction.
 
 \subsection{So what's the problem}
 
@@ -84,12 +85,28 @@ increases the complexity of transfer rules. For example, if any noun
 can be missing its gender, that's one more exception to all rules that
 apply gender agreement.
 
-Due to these issues, most language pairs in Apertium have a separate copy of
-each monolingual dictionary, manually trimmed to match the entries of the
-bilingual dictionary. This of course leads to a lot of redundancy and
-duplicated effort; as an example, there are currently (as of revision 49929)
-twelve Spanish monolingual dictionaries, with sizes varying from 36798 lines to
-204447 lines.
+Finally, there is the issue with tokenisation and multiwords.
+Multiwords in Apertium are entries in the dictionaries that may
+consist of what would otherwise be several tokens. As an example, say
+you have ``take'' and ``out'' listed in your English dictionary, and
+they translate fine in isolation. Now, for Catalan we want to
+translate the phrasal verb ``take out'' into a single word ``treure'',
+so we list it as a \emph{multiword with inner inflection} in the
+English dictionary. This makes any occurrence of forms of ``take out''
+get a single-token multiword analysis, e.g. ``takes out'' gets the
+analysis ``take.vblex.pri.p3.sg# out''. But then the whole multiword
+\emph{has} to be in the bilingual dictionary if it is to be
+translated. If another language pair using the same English dictionary
+has both ``take'' and ``out'' in its bilingual dictionary, but not the
+multiword, the individual words in isolation may be translated, but
+the whole string together will not be translated.
+
+Due to these issues, most language pairs in Apertium have a separate
+copy of each monolingual dictionary, manually trimmed to match the
+entries of the bilingual dictionary. This of course leads to a lot of
+redundancy and duplicated effort; as an example, there are currently
+(as of revision 49929) twelve Spanish monolingual dictionaries, with
+sizes varying from 36798 lines to 204447 lines.
 
 % Also, other monolingual resources, like disambiguator data, were not
 % shared since it's rather much bureaucracy to depend on apertium-foo
