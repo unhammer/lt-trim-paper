@@ -14,8 +14,8 @@
 \newcommand{\f}[1]{`#1'}
 \newcommand{\tool}[1]{\texttt{#1}}
 
-
 \title{FST Intersection: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
+%good word: Decomposition
 
 \name{Author1, Author2, Author3}
 
@@ -54,6 +54,8 @@ their capabilities, and then the problems that have lead to redundant
 dictionary data, and th
 
 \subsection{FST's in the Apertium pipeline}
+\label{sec:pipeline}
+
 Translation with Apertium works as a pipeline, where each
 \emph{module} processes some text and feeds its output as input to the
 next module. First, a surface form like \f{fishes} passes through the
@@ -130,12 +132,14 @@ dictionary. This feature is very useful for e.g. Norwegian, which has
 productive compounding.
 
 \subsection{The Problem: Redundant data}
+\label{sec:problem}
 
 Ideally, when a monolingual dictionary for, say, English is created,
 that dictionary would be available for reuse unaltered (or with only
 bug fixes and additions) in all language pairs where one of the
-languages is English. Unfortunately, that has not been the case in
-Apertium until recently.
+languages is English. Common data would be factored out of language
+pairs, avoiding redundancy, giving \emph{data decomposition}.
+Unfortunately, that has not been the case in Apertium until recently.
 
 If a word is in the analyser, but not in the bilingual translation
 dictionary, certain difficulties arise. As the example above showed,
@@ -197,6 +201,7 @@ the effort of copying files is less than the effort of letting one
 module depend on another for little gain.
 
 \subsection{A Solution: Intersection}
+\label{sec:solution}
 
 However, there is a way around these troubles. Finite state machines
 can be intersected with one another to produce a new finite state
@@ -238,9 +243,22 @@ tokenisation features of \tool{lttoolbox}. The end result should be
 the same as perfect manual trimming. The next section details its
 implementation.
 
+
 \section{Implementation of \tool{lt-trim}}
 
 
+\section{Ending Dictionary Redundancy}
+
+As mentioned in section \ref{sec:solution}, there are already language
+pairs in Apertium that have moved to a decomposed data model, using
+the HFST trimming method. Initially, the HFST language pairs would
+also copy dictionaries, but over the last year, we have created
+configure scripts that let a language pair have a formal dependency on
+one more monolingual data packages. There is now an SVN module
+\texttt{languages}\footnote{\href{http://wiki.apertium.org/wiki/Languages}{http://wiki.apertium.org/wiki/Languages}}
+where such monolingual data packages reside.
+
+\href{http://awwapp.com/draw.html#62731a1e}{illustration}
 
 \section{Discussion}
 \section*{Acknowledgements}
