@@ -26,9 +26,10 @@
 \abstract{
   A Finite State Transducer (FST) used as an analyser, whose output is
   input to another FST, may have entries that don't pass through the
-  second FST. We describe the development of a tool to \emph{trim}
-  such entries in the \tool{lttoolbox} package used in the Apertium
-  machine translation platform.
+  second FST. We discuss certain problems that this creates in the
+  Apertium machine translation platform, and describe the development
+  of a tool to \emph{trim} such entries. The tool is made part of
+  Apertium's \tool{lttoolbox} package.
 }
 
 \begin{document}
@@ -48,7 +49,11 @@ pairs\footnote{A \emph{language pair} is a set of resources to
 FST library for compiling XML dictionaries into binary FST's and for
 processing text with such FST's.
 
-\subsection{The Apertium pipeline}
+Below we give some background on how these FST's fit into Apertium,
+their capabilities, and then the problems that have lead to redundant
+dictionary data, and th
+
+\subsection{FST's in the Apertium pipeline}
 Translation with Apertium works as a pipeline, where each
 \emph{module} processes some text and feeds its output as input to the
 next module. First, a surface form like \f{fishes} passes through the
@@ -87,29 +92,42 @@ which was compiled into a generator for Norwegian can also be used as
 an analyser for Norwegian, by switching the compilation direction.
 
 A major feature of the \tool{lttoolbox} FST package is the support
-for multiwords and compounds. A \textbf{lexical unit} may be a simple
-noun like \f{fish}, or a space-separated word like \f{hairy frogfish}
-(which will be analysed as one token, but otherwise have no formal
-differences from other words), or a multiword with inner inflection
-like \f{takes out} (analysed as \ana{take.vblex.pri.p3.sg\# out} and
-then turned into \ana{take\# out.vblex.pri.p3.sg} before bilingual
-dictionary lookup), or a token which is actually two words which
-should be separated before bilingual dictionary lookup, like
-\f{they'll} (analysed as \ana{prpers.prn.subj.p3.mf.pl+will.vaux.inf}
-and then split into \ana{prpers.prn.subj.p3.mf.pl} and \ana{will.vaux.inf}
-before bilingual dictionary lookup), or a combination of these three
-multiword types. 
+for multiwords and compounds. A \textbf{lexical unit} may be 
+\begin{itemize}
+\item a simple, non-multiword like the noun \f{fish},
+\item a space-separated word like the noun \f{hairy frogfish}, which
+  will be analysed as one token, but otherwise have no formal
+  differences from other words,
+\item a multiword with inner inflection like \f{takes out}, analysed
+  as \ana{take.vblex.pri.p3.sg\# out} and then turned into \ana{take\#
+    out.vblex.pri.p3.sg} (the uninflected part is moved onto the
+  lemma) before bilingual dictionary lookup,
+\item a token which is actually two words which should be separated
+  before bilingual dictionary lookup, like \f{they'll}, analysed as
+  \ana{prpers.prn.subj.p3.mf.pl+will.vaux.inf} and then split into
+  \ana{prpers.prn.subj.p3.mf.pl} and \ana{will.vaux.inf} before
+  bilingual dictionary lookup,
+\item a combination of these three multiword types, like Catalan
+  \f{creure-ho que}, analysed as
+  \ana{creure.vblex.inf+ho.prn.enc.p3.nt\# que} and then moved
+  and split into \ana{creure\# que.vblex.inf} and
+  \ana{ho.prn.enc.p3.nt} before bilingual dictionary lookup.
+\end{itemize}
+
 
 A word that can form a compound with words to the right has a
-\f{hidden} tag compound-only-L, and a word that is able to be a
-right-side of a compound or a word on its own has a tag compound-R.
-These hidden tags are not shown in the analysis output, but used by
-the FST processor. If the noun form \f{frog} is tagged compound-only-L
-and \f{fishes} is tagged compound-R, the \tool{lttoolbox} FST
-processor will analyse \f{frogfishes} as a single compound token
-(unless it was already in the dictionary as an explicit token), which
-is split into two tokens before bilingual dictionary lookup (so the
-full compound does not need to be specified in either dictionary).
+\f{hidden} tag \ana{compound-only-L}, and a word that is able to be a
+right-side of a compound or a word on its own has a tag
+\ana{compound-R}.  These hidden tags are not shown in the analysis
+output, but used by the FST processor. If the noun form \f{frog} is
+tagged \ana{compound-only-L} and \f{fishes} is tagged
+\ana{compound-R}, the \tool{lttoolbox} FST processor will analyse
+\f{frogfishes} as a single compound token \ana{frog.n.sg+fish.n.pl}
+(unless it was already in the dictionary as an explicit token). This
+compound analysis is split into two tokens before bilingual dictionary
+lookup, so the full word does not need to be specified in either
+dictionary. This feature is very useful for e.g. Norwegian, which has
+productive compounding.
 
 \subsection{The Problem: Redundant data}
 
@@ -212,8 +230,17 @@ analyser, but \ana{fish.n} were missing from the bilingual FST,
 matches. In addition, using HFST in language pairs whose data are all
 in \tool{lttoolbox} format would introduce a new dependency.
 
-Thus we decided to create a new tool in \tool{lttoolbox} called
-\tool{lt-trim}, that trims an analyser using a bilingual FST
+Thus we decided to create a new tool within \tool{lttoolbox}, called
+\tool{lt-trim}. This tool should trim an analyser using a bilingual
+FST, creating a trimmed analyser, and handle all the \tool{lttoolbox}
+multiwords and compounds, as well as letting us retain the special
+tokenisation features of \tool{lttoolbox}. The end result should be
+the same as perfect manual trimming. The next section details its
+implementation.
+
+\section{Implementation of \tool{lt-trim}}
+
+
 
 \section{Discussion}
 \section*{Acknowledgements}
