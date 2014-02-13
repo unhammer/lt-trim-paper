@@ -251,12 +251,27 @@ implementation.
 
 As mentioned in section \ref{sec:solution}, there are already language
 pairs in Apertium that have moved to a decomposed data model, using
-the HFST trimming method. Initially, the HFST language pairs would
-also copy dictionaries, but over the last year, we have created
-configure scripts that let a language pair have a formal dependency on
-one more monolingual data packages. There is now an SVN module
+the HFST trimming method. At first, the HFST language pairs would also
+copy dictionaries, even if they were automatically trimmed, just to
+make them available for the language pair.  But over the last year, we
+have created GNU Autotools scripts that let a language pair have a
+formal dependency on one more monolingual data packages\footnote{So if
+    a user asks their package manager, e.g. \tool{apt-get}, to install
+    the language pair \tool{apertium-foo-bar}, it would automatically
+    install dependencies \tool{apertium-foo} and \tool{apertium-bar}
+first.}. There is now an SVN module
 \texttt{languages}\footnote{\href{http://wiki.apertium.org/wiki/Languages}{http://wiki.apertium.org/wiki/Languages}}
-where such monolingual data packages reside.
+where such monolingual data packages reside, and all of the new
+HFST-based languages pairs now use such dependencies, which are
+trimmed automatically, instead of making redundant dictionary copies.
+Disambiguation data is also fetched from the dependency instead of
+being redundantly copied.
+
+But most of the released and ``stable'' Apertium language pairs still
+have dictionary redundancy.  With the new \tool{lt-trim} tool, it is
+finally possible to end the redundancy for the pairs which use
+\tool{lttoolbox}, with its tokenisation, multiword and compounding
+features, and without having to make those pairs dependent on HFST.
 
 \href{http://awwapp.com/draw.html#62731a1e}{illustration}
 
