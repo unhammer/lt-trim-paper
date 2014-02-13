@@ -49,9 +49,9 @@ pairs\footnote{A \emph{language pair} is a set of resources to
 FST library for compiling XML dictionaries into binary FST's and for
 processing text with such FST's.
 
-Below we give some background on how these FST's fit into Apertium,
-their capabilities, and then the problems that have lead to redundant
-dictionary data, and th
+Below we give some background on how these FST's fit into Apertium as
+well as their capabilities; then we discuss the problems that have
+lead to redundant dictionary data, and introduce our solution.
 
 \subsection{FST's in the Apertium pipeline}
 \label{sec:pipeline}
@@ -216,7 +216,7 @@ data in that formalism, partly due to features missing from
 \tool{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
 create a "prefixed" version of the bilingual FST, this is is the
 concatenation of the bilingual FST and the regular expression
-\texttt{.*}, ie. match any symbol zero or more times. Then the command
+\texttt{.*}, i.e. match any symbol zero or more times. Then the command
 \tool{hfst-compose-intersect} on the analyser and the prefixed FST
 creates the FST where only those paths of the analyser remain where
 the right side of the analyser match the left side of the bilingual
