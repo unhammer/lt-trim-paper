@@ -191,14 +191,24 @@ the entries of the bilingual dictionary; so in the example above, if
 \f{take out} did not make sense to have in the bilingual dictionary,
 it would be removed from the copy of the monolingual dictionary. This
 of course leads to a lot of redundancy and duplicated effort; as an
-example, there are currently (as of SVN revision 49929) twelve Spanish
+example, there are currently (as of SVN revision 50180) twelve Spanish
 monolingual dictionaries in stable (SVN trunk) language pairs, with
 sizes varying from 36798 lines to 204447 lines.
+
+The redundancy is not limited to Spanish; in SVN trunk we also find 10
+English, 7 Catalan, and 4 French dictionaries. If we include
+unreleased pairs, these numbers turn to 19, 28, 8 and 16, respectively
+-- in the worst case, if you add some words to an English dictionary,
+there are still 27 dictionaries which miss out on your work.
 
 The lack of shared monolingual dictionaries also means that other
 monolingual resources, like disambiguator data, is not shared, since
 the effort of copying files is less than the effort of letting one
-module depend on another for little gain.
+module depend on another for little gain. And it complicates the reuse
+of Apertium resources for other systems: If I want to create a speller
+for some language supported by Apertium, I either have to manually
+merge dictionaries in order to gain from all the work, or (more
+likely) pick the largest one and hope it's good enough.
 
 \subsection{A Solution: Intersection}
 \label{sec:solution}
@@ -273,9 +283,9 @@ finally possible to end the redundancy for the pairs which use
 \tool{lttoolbox}, with its tokenisation, multiword and compounding
 features, and without having to make those pairs dependent on HFST.
 
+
 \href{http://awwapp.com/draw.html#62731a1e}{illustration}
 
-\section{Discussion}
 \section*{Acknowledgements}
 Part of the development was funded by the Google
 Code-In\footnote{\href{https://code.google.com/gci/}{https://code.google.com/gci/}} programme.
