@@ -117,19 +117,24 @@ for multiwords and compounds. A \textbf{lexical unit} may be
 \end{itemize}
 
 
-A word that can form a compound with words to the right has a
-\f{hidden} tag \ana{compound-only-L}, and a word that is able to be a
-right-side of a compound or a word on its own has a tag
-\ana{compound-R}.  These hidden tags are not shown in the analysis
-output, but used by the FST processor. If the noun form \f{frog} is
-tagged \ana{compound-only-L} and \f{fishes} is tagged
-\ana{compound-R}, the \tool{lttoolbox} FST processor will analyse
-\f{frogfishes} as a single compound token \ana{frog.n.sg+fish.n.pl}
-(unless it was already in the dictionary as an explicit token). This
-compound analysis is split into two tokens before bilingual dictionary
-lookup, so the full word does not need to be specified in either
-dictionary. This feature is very useful for e.g. Norwegian, which has
-productive compounding.
+In addition to the above multiwords, where the whole string is
+explicitly defined as a path in the FST, we have dynamically analysed
+compounds which are not defined as single paths in the FST, but still
+get an analysis during lookup. To mark a word as being able to form a
+compound with words to the right, we give it the \f{hidden} tag
+\ana{compound-only-L}, while a word that is able to be a right-side of
+a compound (or a word on its own) gets the tag \ana{compound-R}.
+These hidden tags are not shown in the analysis output, but used by
+the FST processor during analysis. If the noun form \f{frog} is tagged
+\ana{compound-only-L} and \f{fishes} is tagged \ana{compound-R}, the
+\tool{lttoolbox} FST processor will analyse \f{frogfishes} as a single
+compound token \ana{frog.n.sg+fish.n.pl} (unless it was already in the
+dictionary as an explicit token) by trying all possible ways to split
+the word. After disambiguation, but before bilingual dictionary
+lookup, this compound analysis is split into two tokens, so the full
+word does not need to be specified in either dictionary. This feature
+is very useful for e.g.  Norwegian, which has very productive
+compounding.
 
 \subsection{The Problem: Redundant data}
 \label{sec:problem}
@@ -199,17 +204,22 @@ The redundancy is not limited to Spanish; in SVN trunk we also find 10
 English, 7 Catalan, and 4 French dictionaries. If we include
 unreleased pairs, these numbers turn to 19, 28, 8 and 16, respectively
 -- in the worst case, if you add some words to an English dictionary,
-there are still 27 dictionaries which miss out on your work. If we
-were to create all possible translation pairs of the 34 languages
-appearing in currently released language pairs, we would need 1156
-monolingual dictionaries, where 34 ought to be enough.
+there are still 27 dictionaries which miss out on your work.  The
+numbers get even worse if we look at potential new language pairs.
+Given 3 languages, you ``only'' need 3*(3-1)=6 monolingual
+dictionaries for all possible pairs (remember that a dictionary
+provides both an analyser and a generator). But for 4 languages, you
+need 4*(4-1)=12 dictionaries; if we were to  create all possible
+translation pairs of the 34 languages appearing in currently released
+language pairs, we would need 34*(34-1)=1122 monolingual dictionaries,
+where 34 ought to be enough.
 
 The lack of shared monolingual dictionaries also means that other
 monolingual resources, like disambiguator data, is not shared, since
 the effort of copying files is less than the effort of letting one
 module depend on another for little gain. And it complicates the reuse
-of Apertium resources for other systems: If I want to create a speller
-for some language supported by Apertium, I either have to manually
+of Apertium resources for other systems: If you want to create a speller
+for some language supported by Apertium, you either have to manually
 merge dictionaries in order to gain from all the work, or (more
 likely) pick the largest one and hope it's good enough.
 
@@ -258,6 +268,13 @@ implementation.
 
 
 \section{Implementation of \tool{lt-trim}}
+
+\subsection{Prefixing the bilingual dictionary}
+
+\subsection{Moving lemq's}
+
+\subsection{Intersection}
+
 
 
 \section{Ending Dictionary Redundancy}
