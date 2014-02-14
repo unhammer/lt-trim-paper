@@ -15,13 +15,13 @@
 \newcommand{\tool}[1]{\texttt{#1}}
 
 \title{FST Intersection: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
-%good word: Decomposition
+% good word: Decomposition
 
 \name{Author1, Author2, Author3}
 
 \address{ Affiliation1, Affiliation2, Affiliation3 \\
-               Address1, Address2, Address3 \\
-               author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\}
+  Address1, Address2, Address3 \\
+  author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\}
 
 \abstract{
   A Finite State Transducer (FST) used as an analyser, whose output is
@@ -38,7 +38,7 @@
 
 \section{Introduction and background}
 
-Apertium \cite{forcada2011afp} is a rule-based machine translation
+Apertium~\cite{forcada2011afp} is a rule-based machine translation
 platform, where the data and tools are released under a Free and Open
 Source license (primarily GNU GPL). Apertium translators use Finite
 State Transducers (FST's) for morphological analysis, bilingual
@@ -94,7 +94,7 @@ which was compiled into a generator for Norwegian can also be used as
 an analyser for Norwegian, by switching the compilation direction.
 
 A major feature of the \tool{lttoolbox} FST package is the support
-for multiwords and compounds. A \textbf{lexical unit} may be 
+for multiwords and compounds. A \textbf{lexical unit} may be
 \begin{itemize}
 \item a simple, non-multiword like the noun \f{fish},
 \item a space-separated word like the noun \f{hairy frogfish}, which
@@ -157,10 +157,10 @@ text. Removing features like number, definiteness or tense can skew
 meaning.  But it gets worse: Some languages inflect verbs for
 \emph{negation}, where the half-translated lemma would hide the fact
 that the meaning is negative.\footnote{For simple cases like this, a
-    workaround is to carry surface form information throughout the
-    pipeline, but this fails with multiwords (described below) and
-    compounds, which are heavily used in many Apertium language
-    pairs.}
+  workaround is to carry surface form information throughout the
+  pipeline, but this fails with multiwords (described below) and
+  compounds, which are heavily used in many Apertium language
+  pairs.}
 
 And, as mentioned above, a word not known to the bilingual FST may not
 have its tags translated (or translated correctly) either; when the
@@ -215,34 +215,35 @@ language pairs, we would need $34*(34-1)=1122$ monolingual dictionaries,
 where 34 ought to be enough.
 
 \begin{figure}[h]
-    \begin{center}
-        %\fbox{\parbox{6cm}{
-        %This is a figure with a caption.}}
-        \includegraphics[scale=0.5]{pairs-before.eps} 
-        \caption{Current monodixes with pairs of four languages}
-        \label{fig.1}
-    \end{center}
+  \begin{center}
+    % \fbox{\parbox{6cm}{
+    % This is a figure with a caption.}}
+    \includegraphics[scale=0.5]{pairs-before.eps}
+    \caption{Current monodixes with pairs of four languages}
+    \label{fig.1}
+  \end{center}
 \end{figure}
 
 
 \begin{figure}[h]
-    \begin{center}
-        %\fbox{\parbox{6cm}{
-        %This is a figure with a caption.}}
-        \includegraphics[scale=0.5]{pairs-after.eps} 
-        \caption{Ideal number of monodixes with four languages}
-        \label{fig.1}
-    \end{center}
+  \begin{center}
+    % \fbox{\parbox{6cm}{
+    % This is a figure with a caption.}}
+    \includegraphics[scale=0.5]{pairs-after.eps}
+    \caption{Ideal number of monodixes with four languages}
+    \label{fig.1}
+  \end{center}
 \end{figure}
 
 The lack of shared monolingual dictionaries also means that other
 monolingual resources, like disambiguator data, is not shared, since
 the effort of copying files is less than the effort of letting one
 module depend on another for little gain. And it complicates the reuse
-of Apertium resources for other systems: If you want to create a speller
-for some language supported by Apertium, you either have to manually
-merge dictionaries in order to gain from all the work, or (more
-likely) pick the largest one and hope it's good enough.
+of Apertium's extensive~\cite{tyers2010fosresources} set of language
+resources for other systems: If you want to create a speller for some
+language supported by Apertium, you either have to manually merge
+dictionaries in order to gain from all the work, or (more likely) pick
+the largest one and hope it's good enough.
 
 \subsection{A Solution: Intersection}
 \label{sec:solution}
@@ -255,9 +256,9 @@ with the input (or \textbf{left}) side of the bilingual FST, producing
 a \emph{trimmed} FST. We call this \emph{trimming}.
 
 Some recent language pairs in Apertium use the alternative FST
-framework HFST \cite{linden2011hfst}\footnote{Partly due to available
-data in that formalism, partly due to features missing from
-\tool{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
+framework HFST~\cite{linden2011hfst}\footnote{Partly due to available
+  data in that formalism, partly due to features missing from
+  \tool{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
 create a "prefixed" version of the bilingual FST, this is is the
 concatenation of the bilingual FST and the regular expression
 \texttt{.*}, i.e. match any symbol zero or more times. Then the command
@@ -286,7 +287,7 @@ multiwords and compounds, as well as letting us retain the special
 tokenisation features of \tool{lttoolbox}. The end result should be
 the same as perfect manual trimming. The next section details its
 implementation.\footnote{Available from
-\href{http://example.com/anonymized-until-peer-review}{http://example.com/anonymized-until-peer-review}.}
+  \href{http://example.com/anonymized-until-peer-review}{http://example.com/anonymized-until-peer-review}.}
 
 
 \section{Implementation of \tool{lt-trim}}
@@ -307,10 +308,10 @@ copy dictionaries, even if they were automatically trimmed, just to
 make them available for the language pair.  But over the last year, we
 have created GNU Autotools scripts that let a language pair have a
 formal dependency on one more monolingual data packages\footnote{So if
-    a user asks their package manager, e.g. \tool{apt-get}, to install
-    the language pair \tool{apertium-foo-bar}, it would automatically
-    install dependencies \tool{apertium-foo} and \tool{apertium-bar}
-first.}. There is now an SVN module
+  a user asks their package manager, e.g. \tool{apt-get}, to install
+  the language pair \tool{apertium-foo-bar}, it would automatically
+  install dependencies \tool{apertium-foo} and \tool{apertium-bar}
+  first.}. There is now an SVN module
 \texttt{languages}\footnote{\href{http://wiki.apertium.org/wiki/Languages}{http://wiki.apertium.org/wiki/Languages}}
 where such monolingual data packages reside, and all of the new
 HFST-based languages pairs now use such dependencies, which are
@@ -318,11 +319,27 @@ trimmed automatically, instead of making redundant dictionary copies.
 Disambiguation data is also fetched from the dependency instead of
 being redundantly copied.
 
-But most of the released and ``stable'' Apertium language pairs still
-have dictionary redundancy.  With the new \tool{lt-trim} tool, it is
-finally possible to end the redundancy for the pairs which use
-\tool{lttoolbox}, with its tokenisation, multiword and compounding
-features, and without having to make those pairs dependent on HFST.
+Most of the released and ``stable'' Apertium language pairs use
+\tool{lttoolbox} and still have dictionary redundancy. With the new
+\tool{lt-trim} tool, it is finally possible to end the
+redundancy\footnote{One could argue that there is still
+  \emph{cross-lingual} redundancy in the bilingual dictionaries --
+  Apertium by design does not use an interlingua. Instead, the
+  Apertium dictionary crossing tool
+  \tool{crossdics}~\cite{toral2011crossdics-it-ca} provides ways to
+  extract new translations during development: Given bilingual
+  dictionaries between languages A-B and B-C, it creates a new
+  bilingual dictionary between languages A-C. One argument for not
+  using an interlingua during the translation process is that the
+  dictionary resulting from automatic crossing needs a lot of manual
+  cleaning to root out false friends, unidiomatic translations and
+  other errors -- thus an interlingua would have to contain a lot more
+  information than our current bilingual dictionaries in order to
+  automatically disambiguate such issues. It would also require more
+  linguistics knowledge of developers and heighten the entry barrier
+  for new contributors.} for the pairs which use \tool{lttoolbox},
+with its tokenisation, multiword and compounding features, and without
+having to make those pairs dependent on HFST.
 
 
 
