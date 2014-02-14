@@ -63,8 +63,8 @@ next module. First, a surface form like \f{fishes} passes through the
 \ana{fish.n.pl/fish.vblex.pres}, or, if it is unknown, simply
 \ana{*fishes}. Tokenisation is done during analysis, letting the FST
 decide in a left-right longest match fashion which words are tokens.
-The analyser is technically the union of several FST's, each marked
-for whether they contain entries which are tokenised in the regular
+The compiled analyser technically contains several FST's, each marked
+for whether they have entries which are tokenised in the regular
 way (like regular words), or entries that may separate other tokens,
 like punctuation. Anything that has an analysis is a token, and any
 other sequence consisting of letters of the \texttt{alphabet} of the
@@ -268,10 +268,22 @@ implementation.
 
 
 \section{Implementation of \tool{lt-trim}}
+The implementation consists of two main parts: preprocessing the
+bilingual dictionary, and intersecting it with the analyser. 
 
-\subsection{Prefixing the bilingual dictionary}
 
-\subsection{Moving lemq's}
+\subsection{Preprocessing the bilingual dictionary}
+Like monolingual dictionaries, bilingual ones can actually define
+several FST's, but in this case there is no tokenisation -- the
+distinction is only useful for organising the source, and has no
+effect on processing. So the first preprocessing step is to take the
+union of these FST's.
+
+Next, we append loopback transitions to the final state. Like mentioned
+in section \ref{sec:pipeline} above, the bilingual dictionary is
+underspecified for tags. We want an analyser entry ending in \ana{n.pl} to
+match the bilingual entry ending in \ana{n}; appending loopback
+transitions to the final state
 
 \subsection{Intersection}
 
