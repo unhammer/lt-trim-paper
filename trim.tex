@@ -45,7 +45,7 @@ State Transducers (FST's) for morphological analysis, bilingual
 dictionary lookup and generation of surface forms; most language
 pairs\footnote{A \emph{language pair} is a set of resources to
   translate between a certain set of languages in Apertium, e.g.
-  Basque↔Spanish.} created with Apertium use the \tool{lttoolbox}
+  Basque--Spanish.} created with Apertium use the \tool{lttoolbox}
 FST library for compiling XML dictionaries into binary FST's and for
 processing text with such FST's.
 
@@ -60,7 +60,7 @@ Translation with Apertium works as a pipeline, where each
 \emph{module} processes some text and feeds its output as input to the
 next module. First, a surface form like \f{fishes} passes through the
 \textbf{analyser} FST module, giving a set of analyses like
-\ana{fish.n.pl/fish.vblex.pres}, or, if it is unknown, simply
+\ana{fish<n><pl/fish<vblex><pres>}, or, if it is unknown, simply
 \ana{*fishes}. Tokenisation is done during analysis, letting the FST
 decide in a left-right longest match fashion which words are tokens.
 The compiled analyser technically contains several FST's, each marked
@@ -74,21 +74,23 @@ After analysis, one or more \textbf{disambiguation} modules select
 which of the analyses is the correct one. The \textbf{pretransfer}
 module does some minor formal changes to do with multiwords.
 
-Then a disambiguated analysis like \ana{fish.n.pl} passes through the
-\textbf{bilingual} FST. Using English→Norwegian as an example, we
-would get \ana{fisk.n.m.pl} if the bilingual FST had a matching entry,
-or simply \ana{@fish.n.pl} if it was unknown in that dictionary. So a
-known entry may get changes to both lemma (\ana{fish}→\ana{fisk}) and tags
-(\ana{n.pl}→\ana{n.m.pl}) by the bilingual FST. When processing input to
-the bilingual FST, it is enough that the \emph{prefix} of the tag
-sequence matches, so a bilingual dictionary writer can specify that
-\ana{fish.n} goes to \ana{fisk.n.m} and not bother with specifying all
-inflectional tags like number, definiteness, tense, and so on.
+Then a disambiguated analysis like \ana{fish<n><pl>} passes through
+the \textbf{bilingual} FST. Using English to Norwegian as an
+example, we would get \ana{fisk<n><m><pl>} if the bilingual FST had a
+matching entry, or simply \ana{@fish<n><pl>} if it was unknown in that
+dictionary. So a known entry may get changes to both lemma
+(\ana{fish} to \ana{fisk}) and tags
+(\ana{<n><pl>} to \ana{<n><m><pl>}) by the bilingual FST. When
+processing input to the bilingual FST, it is enough that the
+\emph{prefix} of the tag sequence matches, so a bilingual dictionary
+writer can specify that \ana{fish<n>} goes to \ana{fisk<n><m>} and not
+bother with specifying all inflectional tags like number,
+definiteness, tense, and so on.
 
 The output of the bilingual FST is then passed to the
 \textbf{structural transfer} module (which may change word order,
 ensure determiner agreement, etc.), and finally a \textbf{generator}
-FST which turns analyses like \ana{fisk.n.m.pl} into forms like
+FST which turns analyses like \ana{fisk<n><m><pl>} into forms like
 \f{fiskar}. Generation is the reverse of analysis; the dictionary
 which was compiled into a generator for Norwegian can also be used as
 an analyser for Norwegian, by switching the compilation direction.
@@ -100,40 +102,42 @@ for multiwords and compounds. A \textbf{lexical unit} may be
 \item a space-separated word like the noun \f{hairy frogfish}, which
   will be analysed as one token, but otherwise have no formal
   differences from other words,
-\item a multiword with inner inflection like \f{takes out}, analysed
-  as \ana{take.vblex.pri.p3.sg\# out} and then turned into \ana{take\#
-    out.vblex.pri.p3.sg} (the uninflected part is moved onto the
-  lemma) before bilingual dictionary lookup,
-\item a token which is actually two words which should be separated
-  before bilingual dictionary lookup, like \f{they'll}, analysed as
-  \ana{prpers.prn.subj.p3.mf.pl+will.vaux.inf} and then split into
-  \ana{prpers.prn.subj.p3.mf.pl} and \ana{will.vaux.inf} before
-  bilingual dictionary lookup,
+\item a multiword with inner inflection like \f{takes out}; this is
+  analysed as \ana{take<vblex><pri><p3><sg>\# out} and then, after
+  disambiguation, but before bilingual dictionary lookup, turned into
+  \ana{take\# out<vblex><pri><p3><sg>} – that is, the uninflected part
+  (called the $lemq$) is moved onto the lemma,
+\item a token which is actually two words like \f{they'll}; this is
+  analysed as \ana{prpers<prn><subj><p3><mf><pl> +will<vaux><inf>} and
+  then split after disambiguation, but before bilingual dictionary
+  lookup, into \ana{prpers<prn><subj><p3><mf><pl>} and
+  \ana{will<vaux><inf>},
 \item a combination of these three multiword types, like Catalan
-  \f{creure-ho que}, analysed as
-  \ana{creure.vblex.inf+ho.prn.enc.p3.nt\# que} and then moved
-  and split into \ana{creure\# que.vblex.inf} and
-  \ana{ho.prn.enc.p3.nt} before bilingual dictionary lookup.
+  \f{creure-ho que}, analysed as \ana{creure<vblex><inf>
+    +ho<prn><enc><p3><nt>\# que} and then moved and split into
+  \ana{creure\# que<vblex><inf>} and \ana{ho<prn><enc><p3><nt>} after
+  disambiguation, but before bilingual dictionary lookup.
 \end{itemize}
 
 
 In addition to the above multiwords, where the whole string is
-explicitly defined as a path in the FST, we have dynamically analysed
-compounds which are not defined as single paths in the FST, but still
-get an analysis during lookup. To mark a word as being able to form a
-compound with words to the right, we give it the \f{hidden} tag
-\ana{compound-only-L}, while a word that is able to be a right-side of
-a compound (or a word on its own) gets the tag \ana{compound-R}.
-These hidden tags are not shown in the analysis output, but used by
-the FST processor during analysis. If the noun form \f{frog} is tagged
-\ana{compound-only-L} and \f{fishes} is tagged \ana{compound-R}, the
-\tool{lttoolbox} FST processor will analyse \f{frogfishes} as a single
-compound token \ana{frog.n.sg+fish.n.pl} (unless it was already in the
+explicitly defined as a path in the analyser FST, we have dynamically
+analysed compounds which are not defined as single paths in the FST,
+but still get an analysis during lookup. To mark a word as being able
+to form a compound with words to the right, we give it the \f{hidden}
+tag \ana{<compound-only-L>}, while a word that is able to be a
+right-side of a compound (or a word on its own) gets the tag
+\ana{<compound-R>}. These hidden tags are not shown in the analysis
+output, but used by the FST processor during analysis. If the noun
+form \f{frog} is tagged \ana{<compound-only-L>} and \f{fishes} is
+tagged \ana{<compound-R>}, the \tool{lttoolbox} FST processor will
+analyse \f{frogfishes} as a single compound token
+\ana{frog<n><sg>+fish<n><pl>} (unless the string was already in the
 dictionary as an explicit token) by trying all possible ways to split
 the word. After disambiguation, but before bilingual dictionary
 lookup, this compound analysis is split into two tokens, so the full
 word does not need to be specified in either dictionary. This feature
-is very useful for e.g.  Norwegian, which has very productive
+is very useful for e.g. Norwegian, which has very productive
 compounding.
 
 \subsection{The Problem: Redundant data}
@@ -183,7 +187,7 @@ translate the phrasal verb \f{take out} into a single word \f{treure},
 so we list it as a \emph{multiword with inner inflection} in the
 English dictionary. This makes any occurrence of forms of \f{take out}
 get a single-token multiword analysis, e.g. \f{takes out} gets the
-analysis \ana{take.vblex.pri.p3.sg\# out}. But then the whole multiword
+analysis \ana{take<vblex><pri><p3><sg>\# out}. But then the whole multiword
 \emph{has} to be in the bilingual dictionary if it is to be
 translated. If another language pair using the same English dictionary
 has both \f{take} and \f{out} in its bilingual dictionary, but not the
@@ -219,7 +223,7 @@ where 34 ought to be enough.
     % \fbox{\parbox{6cm}{
     % This is a figure with a caption.}}
     \includegraphics[scale=0.5]{pairs-before.eps}
-    \caption{Current monodixes with pairs of four languages}
+    \caption{Current number of monodixes with pairs of four languages}
     \label{fig.1}
   \end{center}
 \end{figure}
@@ -255,28 +259,28 @@ intersect the output (or \textbf{right}) side of the full analyser
 with the input (or \textbf{left}) side of the bilingual FST, producing
 a \emph{trimmed} FST. We call this \emph{trimming}.
 
-Some recent language pairs in Apertium use the alternative FST
-framework HFST~\cite{linden2011hfst}\footnote{Partly due to available
-  data in that formalism, partly due to features missing from
-  \tool{lttoolbox} like \emph{flag diacritics}.}. Using HFST, one can
-create a "prefixed" version of the bilingual FST, this is is the
-concatenation of the bilingual FST and the regular expression
-\texttt{.*}, i.e. match any symbol zero or more times. Then the command
-\tool{hfst-compose-intersect} on the analyser and the prefixed FST
-creates the FST where only those paths of the analyser remain where
-the right side of the analyser match the left side of the bilingual
-FST. The prefixing is necessary since, as mentioned above, the
-bilingual dictionary is underspecified for inflectional tags such as
-definiteness, and so on.
+Some recent language pairs in Apertium use the alternative, Free and
+Open Source FST framework HFST~\cite{linden2011hfst}\footnote{Partly
+  due to available data in that formalism, partly due to features
+  missing from \tool{lttoolbox} like \emph{flag diacritics}.}. Using
+HFST, one can create a "prefixed" version of the bilingual FST, this
+is is the concatenation of the bilingual FST and the regular
+expression \texttt{.*}, i.e. match any symbol zero or more times. Then
+the command \tool{hfst-compose-intersect} on the analyser and the
+prefixed FST creates the FST where only those paths of the analyser
+remain where the right side of the analyser match the left side of the
+bilingual FST. The prefixing is necessary since, as mentioned above,
+the bilingual dictionary is underspecified for inflectional tags such
+as definiteness, and so on.
 
 The HFST solution works, but is missing many of the Apertium-specific
 features such as different types of tokenisation FST's, and it does
 not handle the fact that multiwords may split or change format before
 bilingual dictionary lookup. Also, HFST represents compounds with an
 optional transition from the end of the noun to the beginning of the
-noun dictionary -- so if \ana{frog.n} and \ana{fish.n} were in the
-analyser, but \ana{fish.n} were missing from the bilingual FST,
-\ana{frog.n+fish.n} would remain in the trimmed FST since the prefix
+noun dictionary -- so if \ana{frog<n>} and \ana{fish<n>} were in the
+analyser, but \ana{fish<n>} were missing from the bilingual FST,
+\ana{frog<n>+fish<n>} would remain in the trimmed FST since the prefix
 matches. In addition, using HFST in language pairs whose data are all
 in \tool{lttoolbox} format would introduce a new dependency.
 
@@ -310,10 +314,11 @@ state.
 Next, we append loopback transitions to the final state. Like
 mentioned in section \ref{sec:pipeline} above, the bilingual
 dictionary is underspecified for tags. We want an analyser entry
-ending in \ana{n.pl} to match the bilingual entry ending in \ana{n};
-appending loopback transitions to the final state means the
-intersection will end up containing \ana{n.pl}. The next section
-explains the implementation of loopbacks. 
+ending in \ana{<n><pl>} to match the bilingual entry ending in
+\ana{<n>}. Appending loopback transitions to the final state, ie.
+\ana{<n>.*}, means the intersection will end up containing
+\ana{<n><pl>}. The next section explains the implementation of
+loopbacks.
 
 The final preprocessing step is to give multiwords with inner
 inflection the same format as in the analyser. As mentioned in section
@@ -354,7 +359,7 @@ identifiers.
 \subsection{Moving uninflected lemma parts}
 \label{sec:lemqmove}
 
-To turn \ana{take\# out.vblex} into \ana{take.vblex\# out} and so on
+To turn \ana{take\# out<vblex>} into \ana{take<vblex>\# out} and so on
 (and for longer tag sequences too), we do a depth-first traversal looking
 for an occurrence of the \# symbol. Then we replace the \#-transition
 $t$ with one into the new transducer returned by
@@ -429,9 +434,16 @@ redundancy\footnote{One could argue that there is still
   linguistics knowledge of developers and heighten the entry barrier
   for new contributors.} for the pairs which use \tool{lttoolbox},
 with its tokenisation, multiword and compounding features, and without
-having to make those pairs dependent on HFST.
+having to make those pairs dependent on a whole other FST framework
+simply for compilation.
 
-
+The tool has only recently been released, and there is still much work
+to do in converting existing language pairs to a decomposed data
+model. Monolingual dictionaries have to be merged, and the various
+language pairs may have altered the tag sets in more or less subtle
+ways that can affect disambiguation, transfer and other parts of the
+pipeline. However, this is a one-time job, and any new languages added
+to Apertium can immediately reap the benefits.
 
 \section*{Acknowledgements}
 Part of the development was funded by the Google
