@@ -1,5 +1,6 @@
 # From http://www.wlug.org.nz/LatexMakefiles
 TARGET=trim
+FIGURES=pairs-before.eps pairs-after.eps
 
 # make pdf by default
 all: ${TARGET}.pdf
@@ -18,7 +19,11 @@ ${TARGET}.bbl: apertium.bib
 # do it again in case there are out-of-order cross-references
 	@latex ${TARGET}.tex
 
-${TARGET}.dvi: ${TARGET}.bbl ${TARGET}.tex
+# Figures printable with tgif:
+%.eps: %.obj
+	tgif -print -eps $<
+
+${TARGET}.dvi: ${TARGET}.bbl ${TARGET}.tex ${FIGURES}
 	@latex ${TARGET}.tex
 
 # shortcut, so we can say "make ps"
@@ -28,7 +33,7 @@ ${TARGET}.ps: ${TARGET}.dvi
 	@dvips -t a4 ${TARGET}.dvi
 
 clean:
-	rm -f ${TARGET}.{log,aux,ps,dvi,bbl,blg,log}
+	rm -f ${TARGET}.{log,aux,ps,dvi,bbl,blg,log} ${FIGURES}.eps
 
 reallyclean: clean
 	rm -f ${TARGET}.{ps,pdf}
