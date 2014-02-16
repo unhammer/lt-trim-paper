@@ -265,7 +265,7 @@ Open Source FST framework HFST~\cite{linden2011hfst}\footnote{Partly
   missing from \tool{lttoolbox} like \emph{flag diacritics}.}. Using
 HFST, one can create a "prefixed" version of the bilingual FST, this
 is is the concatenation of the bilingual FST and the regular
-expression \texttt{.*}, i.e. match any symbol zero or more times. Then
+expression \ana{.*}, i.e. match any symbol zero or more times. Then
 the command \tool{hfst-compose-intersect} on the analyser and the
 prefixed FST creates the FST where only those paths of the analyser
 remain where the right side of the analyser match the left side of the
