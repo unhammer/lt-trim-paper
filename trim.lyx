@@ -1,4 +1,4 @@
-#LyX file created by tex2lyx 2.0.2
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
 \lyxformat 413
 \begin_document
 \begin_header
@@ -36,12 +36,9 @@
   of a tool to \emph{trim} such entries. The tool is made part of
   Apertium's \tool{lttoolbox} package.
 }
-
-
-
-
 \end_preamble
 \use_default_options false
+\maintain_unincluded_children false
 \language english
 \language_package none
 \inputencoding latin9
@@ -50,23 +47,29 @@
 \font_sans default
 \font_typewriter default
 \font_default_family default
+\use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
+
 \graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
 \paperfontsize 10
 \spacing single
-\use_hyperref 1
-\pdf_bookmarks 1
-\pdf_bookmarksnumbered 0
-\pdf_bookmarksopen 0
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
 \pdf_bookmarksopenlevel 1
-\pdf_breaklinks 0
-\pdf_pdfborder 0
-\pdf_colorlinks 0
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
 \pdf_backref section
-\pdf_pdfusetitle 1
+\pdf_pdfusetitle true
 \papersize a4paper
 \use_geometry false
 \use_amsmath 1
@@ -75,9 +78,14 @@
 \use_mathdots 0
 \cite_engine basic
 \use_bibtopic false
+\use_indices false
 \paperorientation portrait
 \suppress_date false
 \use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -96,12 +104,10 @@
 \begin_body
 
 \begin_layout Standard
-
-
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -114,37 +120,37 @@ maketitleabstract
 \end_layout
 
 \begin_layout Section
-
 Introduction and background
 \end_layout
 
 \begin_layout Standard
-
 Apertium
 \begin_inset space ~
-
 \end_inset
 
 
 \begin_inset CommandInset citation
 LatexCommand cite
-after ""
 key "forcada2011afp"
 
 \end_inset
 
- is a rule-based machine translation platform, where the data and tools are released under a Free and Open Source license (primarily GNU GPL). Apertium translators use Finite State Transducers (FST's) for morphological analysis, bilingual dictionary lookup and generation of surface forms; most language pairs
+ is a rule-based machine translation platform, where the data and tools
+ are released under a Free and Open Source license (primarily GNU GPL).
+ Apertium translators use Finite State Transducers (FST's) for morphological
+ analysis, bilingual dictionary lookup and generation of surface forms;
+ most language pairs
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
+\begin_layout Plain Layout
 A 
 \emph on
 language pair
 \emph default
- is a set of resources to translate between a certain set of languages in Apertium, e.g. BasqueâSpanish.
+ is a set of resources to translate between a certain set of languages in
+ Apertium, e.g.
+ BasqueâSpanish.
 \end_layout
 
 \end_inset
@@ -153,7 +159,7 @@ language pair
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -166,29 +172,28 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- FST library for compiling XML dictionaries into binary FST's and for processing text with such FST's.
+ FST library for compiling XML dictionaries into binary FST's and for processing
+ text with such FST's.
 \end_layout
 
 \begin_layout Standard
-
-Below we give some background on how these FST's fit into Apertium as well as their capabilities; then we discuss the problems that have lead to redundant dictionary data, and introduce our solution.
+Below we give some background on how these FST's fit into Apertium as well
+ as their capabilities; then we discuss the problems that have lead to redundant
+ dictionary data, and introduce our solution.
 \end_layout
 
 \begin_layout Subsection
-
 FST's in the Apertium pipeline
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:pipeline"
@@ -199,16 +204,16 @@ name "sec:pipeline"
 \end_layout
 
 \begin_layout Standard
-
 Translation with Apertium works as a pipeline, where each 
 \emph on
 module
 \emph default
- processes some text and feeds its output as input to the next module. First, a surface form like 
+ processes some text and feeds its output as input to the next module.
+ First, a surface form like 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -221,7 +226,7 @@ fishes
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -236,7 +241,7 @@ analyser
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -249,7 +254,7 @@ fish.n.pl/fish.vblex.pres
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -260,7 +265,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -273,27 +278,35 @@ ana{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. Tokenisation is done during analysis, letting the FST decide in a left-right longest match fashion which words are tokens. The analyser is technically the union of several FST's, each marked for whether they contain entries which are tokenised in the regular way (like regular words), or entries that may separate other tokens, like punctuation. Anything that has an analysis is a token, and any other sequence consisting of letters of the 
+.
+ Tokenisation is done during analysis, letting the FST decide in a left-right
+ longest match fashion which words are tokens.
+ The analyser is technically the union of several FST's, each marked for
+ whether they contain entries which are tokenised in the regular way (like
+ regular words), or entries that may separate other tokens, like punctuation.
+ Anything that has an analysis is a token, and any other sequence consisting
+ of letters of the 
 \family typewriter
 alphabet
 \family default
- of the analyser is an unknown word token. Anything else can separate tokens.
+ of the analyser is an unknown word token.
+ Anything else can separate tokens.
 \end_layout
 
 \begin_layout Standard
-
 After analysis, one or more 
 \series bold
 disambiguation
 \series default
- modules select which of the analyses is the correct one. The 
+ modules select which of the analyses is the correct one.
+ The 
 \series bold
 pretransfer
 \series default
@@ -301,12 +314,11 @@ pretransfer
 \end_layout
 
 \begin_layout Standard
-
 Then a disambiguated analysis like 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -319,7 +331,7 @@ fish.n.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -330,11 +342,12 @@ status collapsed
 \series bold
 bilingual
 \series default
- FST. Using EnglishâNorwegian as an example, we would get 
+ FST.
+ Using EnglishâNorwegian as an example, we would get 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -347,7 +360,7 @@ fisk.n.m.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -358,7 +371,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -371,18 +384,19 @@ ana{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- if it was unknown in that dictionary. So a known entry may get changes to both lemma (
+ if it was unknown in that dictionary.
+ So a known entry may get changes to both lemma (
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -395,7 +409,7 @@ fish
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -406,7 +420,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -419,7 +433,7 @@ fisk
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -430,7 +444,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -443,7 +457,7 @@ n.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -454,7 +468,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -467,22 +481,24 @@ n.m.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-) by the bilingual FST. When processing input to the bilingual FST, it is enough that the 
+) by the bilingual FST.
+ When processing input to the bilingual FST, it is enough that the 
 \emph on
 prefix
 \emph default
- of the tag sequence matches, so a bilingual dictionary writer can specify that 
+ of the tag sequence matches, so a bilingual dictionary writer can specify
+ that 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -495,7 +511,7 @@ fish.n
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -506,7 +522,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -519,23 +535,24 @@ fisk.n.m
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- and not bother with specifying all inflectional tags like number, definiteness, tense, and so on.
+ and not bother with specifying all inflectional tags like number, definiteness,
+ tense, and so on.
 \end_layout
 
 \begin_layout Standard
-
 The output of the bilingual FST is then passed to the 
 \series bold
 structural transfer
 \series default
- module (which may change word order, ensure determiner agreement, etc.), and finally a 
+ module (which may change word order, ensure determiner agreement, etc.),
+ and finally a 
 \series bold
 generator
 \series default
@@ -543,7 +560,7 @@ generator
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -556,7 +573,7 @@ fisk.n.m.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -567,7 +584,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -580,23 +597,25 @@ fiskar
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. Generation is the reverse of analysis; the dictionary which was compiled into a generator for Norwegian can also be used as an analyser for Norwegian, by switching the compilation direction.
+.
+ Generation is the reverse of analysis; the dictionary which was compiled
+ into a generator for Norwegian can also be used as an analyser for Norwegian,
+ by switching the compilation direction.
 \end_layout
 
 \begin_layout Standard
-
 A major feature of the 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -609,14 +628,15 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- FST package is the support for multiwords and compounds. A 
+ FST package is the support for multiwords and compounds.
+ A 
 \series bold
 lexical unit
 \series default
@@ -624,12 +644,11 @@ lexical unit
 \end_layout
 
 \begin_layout Itemize
-
 a simple, non-multiword like the noun 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -642,7 +661,7 @@ fish
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -653,12 +672,11 @@ status collapsed
 \end_layout
 
 \begin_layout Itemize
-
 a space-separated word like the noun 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -671,23 +689,23 @@ hairy frogfish
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-, which will be analysed as one token, but otherwise have no formal differences from other words, 
+, which will be analysed as one token, but otherwise have no formal differences
+ from other words, 
 \end_layout
 
 \begin_layout Itemize
-
 a multiword with inner inflection like 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -700,7 +718,7 @@ takes out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -711,7 +729,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -724,7 +742,7 @@ take.vblex.pri.p3.sg# out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -735,7 +753,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -748,23 +766,24 @@ take# out.vblex.pri.p3.sg
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- (the uninflected part is moved onto the lemma) before bilingual dictionary lookup, 
+ (the uninflected part is moved onto the lemma) before bilingual dictionary
+ lookup, 
 \end_layout
 
 \begin_layout Itemize
-
-a token which is actually two words which should be separated before bilingual dictionary lookup, like 
+a token which is actually two words which should be separated before bilingual
+ dictionary lookup, like 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -777,7 +796,7 @@ they'll
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -788,7 +807,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -801,7 +820,7 @@ prpers.prn.subj.p3.mf.pl+will.vaux.inf
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -812,7 +831,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -825,7 +844,7 @@ prpers.prn.subj.p3.mf.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -836,7 +855,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -849,7 +868,7 @@ will.vaux.inf
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -860,12 +879,11 @@ status collapsed
 \end_layout
 
 \begin_layout Itemize
-
 a combination of these three multiword types, like Catalan 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -878,7 +896,7 @@ creure-ho que
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -889,7 +907,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -902,7 +920,7 @@ creure.vblex.inf+ho.prn.enc.p3.nt# que
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -913,7 +931,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -926,7 +944,7 @@ creure# que.vblex.inf
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -937,7 +955,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -950,23 +968,28 @@ ho.prn.enc.p3.nt
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- before bilingual dictionary lookup. 
+ before bilingual dictionary lookup.
+ 
 \end_layout
 
 \begin_layout Standard
-
-In addition to the above multiwords, where the whole string is explicitly defined as a path in the FST, we have dynamically analysed compounds which are not defined as single paths in the FST, but still get an analysis during lookup. To mark a word as being able to form a compound with words to the right, we give it the 
+In addition to the above multiwords, where the whole string is explicitly
+ defined as a path in the FST, we have dynamically analysed compounds which
+ are not defined as single paths in the FST, but still get an analysis during
+ lookup.
+ To mark a word as being able to form a compound with words to the right,
+ we give it the 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -979,7 +1002,7 @@ hidden
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -990,7 +1013,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1003,18 +1026,19 @@ compound-only-L
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-, while a word that is able to be a right-side of a compound (or a word on its own) gets the tag 
+, while a word that is able to be a right-side of a compound (or a word
+ on its own) gets the tag 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1027,18 +1051,21 @@ compound-R
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. These hidden tags are not shown in the analysis output, but used by the FST processor during analysis. If the noun form 
+.
+ These hidden tags are not shown in the analysis output, but used by the
+ FST processor during analysis.
+ If the noun form 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1051,7 +1078,7 @@ frog
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1062,7 +1089,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1075,7 +1102,7 @@ compound-only-L
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1086,7 +1113,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1099,7 +1126,7 @@ fishes
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1110,7 +1137,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1123,7 +1150,7 @@ compound-R
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1134,7 +1161,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1147,7 +1174,7 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1158,7 +1185,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1171,7 +1198,7 @@ frogfishes
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1182,7 +1209,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1195,24 +1222,27 @@ frog.n.sg+fish.n.pl
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- (unless it was already in the dictionary as an explicit token) by trying all possible ways to split the word. After disambiguation, but before bilingual dictionary lookup, this compound analysis is split into two tokens, so the full word does not need to be specified in either dictionary. This feature is very useful for e.g. Norwegian, which has very productive compounding.
+ (unless it was already in the dictionary as an explicit token) by trying
+ all possible ways to split the word.
+ After disambiguation, but before bilingual dictionary lookup, this compound
+ analysis is split into two tokens, so the full word does not need to be
+ specified in either dictionary.
+ This feature is very useful for e.g.
+ Norwegian, which has very productive compounding.
 \end_layout
 
 \begin_layout Subsection
-
 The Problem: Redundant data
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:problem"
@@ -1223,21 +1253,26 @@ name "sec:problem"
 \end_layout
 
 \begin_layout Standard
-
-Ideally, when a monolingual dictionary for, say, English is created, that dictionary would be available for reuse unaltered (or with only bug fixes and additions) in all language pairs where one of the languages is English. Common data would be factored out of language pairs, avoiding redundancy, giving 
+Ideally, when a monolingual dictionary for, say, English is created, that
+ dictionary would be available for reuse unaltered (or with only bug fixes
+ and additions) in all language pairs where one of the languages is English.
+ Common data would be factored out of language pairs, avoiding redundancy,
+ giving 
 \emph on
 data decomposition
 \emph default
-. Unfortunately, that has not been the case in Apertium until recently.
+.
+ Unfortunately, that has not been the case in Apertium until recently.
 \end_layout
 
 \begin_layout Standard
-
-If a word is in the analyser, but not in the bilingual translation dictionary, certain difficulties arise. As the example above showed, if 
+If a word is in the analyser, but not in the bilingual translation dictionary,
+ certain difficulties arise.
+ As the example above showed, if 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1250,7 +1285,7 @@ fishes
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1261,7 +1296,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1274,7 +1309,7 @@ ana{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1285,7 +1320,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1298,18 +1333,19 @@ ana{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. Given 
+.
+ Given 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1322,18 +1358,19 @@ f{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-, a post-editor who knows both languages can immediately see what the original was, while the half-translated 
+, a post-editor who knows both languages can immediately see what the original
+ was, while the half-translated 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1346,25 +1383,28 @@ ana{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- hides the number information in the source text. Removing features like number, definiteness or tense can skew meaning. But it gets worse: Some languages inflect verbs for 
+ hides the number information in the source text.
+ Removing features like number, definiteness or tense can skew meaning.
+ But it gets worse: Some languages inflect verbs for 
 \emph on
 negation
 \emph default
-, where the half-translated lemma would hide the fact that the meaning is negative.
+, where the half-translated lemma would hide the fact that the meaning is
+ negative.
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
-For simple cases like this, a workaround is to carry surface form information throughout the pipeline, but this fails with multiwords (described below) and compounds, which are heavily used in many Apertium language pairs.
+\begin_layout Plain Layout
+For simple cases like this, a workaround is to carry surface form information
+ throughout the pipeline, but this fails with multiwords (described below)
+ and compounds, which are heavily used in many Apertium language pairs.
 \end_layout
 
 \end_inset
@@ -1373,8 +1413,10 @@ For simple cases like this, a workaround is to carry surface form information th
 \end_layout
 
 \begin_layout Standard
-
-And, as mentioned above, a word not known to the bilingual FST may not have its tags translated (or translated correctly) either; when the transfer module tries to use the half-translated tags to determine agreement, the 
+And, as mentioned above, a word not known to the bilingual FST may not have
+ its tags translated (or translated correctly) either; when the transfer
+ module tries to use the half-translated tags to determine agreement, the
+ 
 \emph on
 context
 \emph default
@@ -1382,21 +1424,25 @@ context
 \end_layout
 
 \begin_layout Standard
-
 Trying to write transfer rules to deal with half-translated tags also 
 \emph on
 increases the complexity of transfer rules
 \emph default
-. For example, if any noun can be missing its gender, that's one more exception to all rules that apply gender agreement (as well as any feature that interacts with gender).
+.
+ For example, if any noun can be missing its gender, that's one more exception
+ to all rules that apply gender agreement (as well as any feature that interacts
+ with gender).
 \end_layout
 
 \begin_layout Standard
-
-Finally, there are issues with tokenisation and multiwords. Multiwords in Apertium are entries in the dictionaries that may consist of what would otherwise be several tokens. As an example, say you have 
+Finally, there are issues with tokenisation and multiwords.
+ Multiwords in Apertium are entries in the dictionaries that may consist
+ of what would otherwise be several tokens.
+ As an example, say you have 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1409,7 +1455,7 @@ take
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1420,7 +1466,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1433,18 +1479,19 @@ out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- listed in your English dictionary, and they translate fine in isolation. Now, for Catalan we want to translate the phrasal verb 
+ listed in your English dictionary, and they translate fine in isolation.
+ Now, for Catalan we want to translate the phrasal verb 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1457,7 +1504,7 @@ take out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1468,7 +1515,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1481,7 +1528,7 @@ treure
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1492,11 +1539,12 @@ status collapsed
 \emph on
 multiword with inner inflection
 \emph default
- in the English dictionary. This makes any occurrence of forms of 
+ in the English dictionary.
+ This makes any occurrence of forms of 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1509,18 +1557,19 @@ take out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- get a single-token multiword analysis, e.g. 
+ get a single-token multiword analysis, e.g.
+ 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1533,7 +1582,7 @@ takes out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1544,7 +1593,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1557,22 +1606,24 @@ take.vblex.pri.p3.sg# out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. But then the whole multiword 
+.
+ But then the whole multiword 
 \emph on
 has
 \emph default
- to be in the bilingual dictionary if it is to be translated. If another language pair using the same English dictionary has both 
+ to be in the bilingual dictionary if it is to be translated.
+ If another language pair using the same English dictionary has both 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1585,7 +1636,7 @@ take
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -1596,7 +1647,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1609,27 +1660,30 @@ out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- in its bilingual dictionary, but not the multiword, the individual words in isolation may be translated, but the whole string together will not be translated.
+ in its bilingual dictionary, but not the multiword, the individual words
+ in isolation may be translated, but the whole string together will not
+ be translated.
 \end_layout
 
 \begin_layout Standard
-
-Due to these issues, most language pairs in Apertium have a separate copy of each monolingual dictionary, manually 
+Due to these issues, most language pairs in Apertium have a separate copy
+ of each monolingual dictionary, manually 
 \emph on
 trimmed
 \emph default
- to match the entries of the bilingual dictionary; so in the example above, if 
+ to match the entries of the bilingual dictionary; so in the example above,
+ if 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1642,19 +1696,29 @@ take out
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- did not make sense to have in the bilingual dictionary, it would be removed from the copy of the monolingual dictionary. This of course leads to a lot of redundancy and duplicated effort; as an example, there are currently (as of SVN revision 50180) twelve Spanish monolingual dictionaries in stable (SVN trunk) language pairs, with sizes varying from 36798 lines to 204447 lines.
+ did not make sense to have in the bilingual dictionary, it would be removed
+ from the copy of the monolingual dictionary.
+ This of course leads to a lot of redundancy and duplicated effort; as an
+ example, there are currently (as of SVN revision 50180) twelve Spanish
+ monolingual dictionaries in stable (SVN trunk) language pairs, with sizes
+ varying from 36798 lines to 204447 lines.
 \end_layout
 
 \begin_layout Standard
-
-The redundancy is not limited to Spanish; in SVN trunk we also find 10 English, 7 Catalan, and 4 French dictionaries. If we include unreleased pairs, these numbers turn to 19, 28, 8 and 16, respectively -- in the worst case, if you add some words to an English dictionary, there are still 27 dictionaries which miss out on your work. The numbers get even worse if we look at potential new language pairs. Given 3 languages, you 
+The redundancy is not limited to Spanish; in SVN trunk we also find 10 English,
+ 7 Catalan, and 4 French dictionaries.
+ If we include unreleased pairs, these numbers turn to 19, 28, 8 and 16,
+ respectively -- in the worst case, if you add some words to an English
+ dictionary, there are still 27 dictionaries which miss out on your work.
+ The numbers get even worse if we look at potential new language pairs.
+ Given 3 languages, you 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1666,11 +1730,15 @@ only
 \begin_inset Formula $3*(3-1)=6$
 \end_inset
 
- monolingual dictionaries for all possible pairs (remember that a dictionary provides both an analyser and a generator). But for 4 languages, you need 
+ monolingual dictionaries for all possible pairs (remember that a dictionary
+ provides both an analyser and a generator).
+ But for 4 languages, you need 
 \begin_inset Formula $4*(4-1)=12$
 \end_inset
 
- dictionaries; if we were to create all possible translation pairs of the 34 languages appearing in currently released language pairs, we would need 
+ dictionaries; if we were to create all possible translation pairs of the
+ 34 languages appearing in currently released language pairs, we would need
+ 
 \begin_inset Formula $34*(34-1)=1122$
 \end_inset
 
@@ -1678,12 +1746,10 @@ only
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 % 
 \backslash
@@ -1692,8 +1758,7 @@ fbox{
 parbox{6cm}{
 \end_layout
 
-\begin_layout Standard
-
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1703,13 +1768,12 @@ parbox{6cm}{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 % This is a figure with a caption.}}
 \end_layout
 
-\begin_layout Standard
-
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1719,20 +1783,15 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset Float figure
 placement h
 wide false
 sideways false
 status open
 
-
-\begin_layout Standard
+\begin_layout Plain Layout
 \align center
-
-
-\begin_inset Graphics 
+\begin_inset Graphics
 	filename pairs-before.eps
 	scale 50
 	draft
@@ -1744,8 +1803,7 @@ status open
  
 \begin_inset Caption
 
-\begin_layout Standard
-
+\begin_layout Plain Layout
 Current monodixes with pairs of four languages
 \end_layout
 
@@ -1754,13 +1812,11 @@ Current monodixes with pairs of four languages
 
 \end_layout
 
-\begin_layout Standard
-
-
+\begin_layout Plain Layout
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1773,7 +1829,7 @@ centering
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 {}
 \end_layout
@@ -1796,12 +1852,10 @@ name "fig.1"
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 % 
 \backslash
@@ -1810,8 +1864,7 @@ fbox{
 parbox{6cm}{
 \end_layout
 
-\begin_layout Standard
-
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1821,13 +1874,12 @@ parbox{6cm}{
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 % This is a figure with a caption.}}
 \end_layout
 
-\begin_layout Standard
-
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -1837,20 +1889,15 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset Float figure
 placement h
 wide false
 sideways false
 status open
 
-
-\begin_layout Standard
+\begin_layout Plain Layout
 \align center
-
-
-\begin_inset Graphics 
+\begin_inset Graphics
 	filename pairs-after.eps
 	scale 50
 	draft
@@ -1862,8 +1909,7 @@ status open
  
 \begin_inset Caption
 
-\begin_layout Standard
-
+\begin_layout Plain Layout
 Ideal number of monodixes with four languages
 \end_layout
 
@@ -1872,13 +1918,11 @@ Ideal number of monodixes with four languages
 
 \end_layout
 
-\begin_layout Standard
-
-
+\begin_layout Plain Layout
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -1891,7 +1935,7 @@ centering
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 {}
 \end_layout
@@ -1914,31 +1958,32 @@ name "fig.1"
 \end_layout
 
 \begin_layout Standard
-
-The lack of shared monolingual dictionaries also means that other monolingual resources, like disambiguator data, is not shared, since the effort of copying files is less than the effort of letting one module depend on another for little gain. And it complicates the reuse of Apertium's extensive
+The lack of shared monolingual dictionaries also means that other monolingual
+ resources, like disambiguator data, is not shared, since the effort of
+ copying files is less than the effort of letting one module depend on another
+ for little gain.
+ And it complicates the reuse of Apertium's extensive
 \begin_inset space ~
-
 \end_inset
 
 
 \begin_inset CommandInset citation
 LatexCommand cite
-after ""
 key "tyers2010fosresources"
 
 \end_inset
 
- set of language resources for other systems: If you want to create a speller for some language supported by Apertium, you either have to manually merge dictionaries in order to gain from all the work, or (more likely) pick the largest one and hope it's good enough.
+ set of language resources for other systems: If you want to create a speller
+ for some language supported by Apertium, you either have to manually merge
+ dictionaries in order to gain from all the work, or (more likely) pick
+ the largest one and hope it's good enough.
 \end_layout
 
 \begin_layout Subsection
-
 A Solution: Intersection
 \end_layout
 
 \begin_layout Standard
-
-
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:solution"
@@ -1949,8 +1994,11 @@ name "sec:solution"
 \end_layout
 
 \begin_layout Standard
-
-However, there is a way around these troubles. Finite state machines can be intersected with one another to produce a new finite state machine. In the case of the Apertium transducers, what we want is to intersect the output (or 
+However, there is a way around these troubles.
+ Finite state machines can be intersected with one another to produce a
+ new finite state machine.
+ In the case of the Apertium transducers, what we want is to intersect the
+ output (or 
 \series bold
 right
 \series default
@@ -1962,7 +2010,8 @@ left
 \emph on
 trimmed
 \emph default
- FST. We call this 
+ FST.
+ We call this 
 \emph on
 trimming
 \emph default
@@ -1970,16 +2019,14 @@ trimming
 \end_layout
 
 \begin_layout Standard
-
-Some recent language pairs in Apertium use the alternative FST framework HFST
+Some recent language pairs in Apertium use the alternative FST framework
+ HFST
 \begin_inset space ~
-
 \end_inset
 
 
 \begin_inset CommandInset citation
 LatexCommand cite
-after ""
 key "linden2011hfst"
 
 \end_inset
@@ -1988,14 +2035,13 @@ key "linden2011hfst"
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
-Partly due to available data in that formalism, partly due to features missing from 
+\begin_layout Plain Layout
+Partly due to available data in that formalism, partly due to features missing
+ from 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2008,7 +2054,7 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2024,15 +2070,20 @@ flag diacritics
 
 \end_inset
 
-. Using HFST, one can create a "prefixed" version of the bilingual FST, this is is the concatenation of the bilingual FST and the regular expression 
+.
+ Using HFST, one can create a "prefixed" version of the bilingual FST, this
+ is is the concatenation of the bilingual FST and the regular expression
+ 
 \family typewriter
 .*
 \family default
-, i.e. match any symbol zero or more times. Then the command 
+, i.e.
+ match any symbol zero or more times.
+ Then the command 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2045,23 +2096,31 @@ hfst-compose-intersect
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- on the analyser and the prefixed FST creates the FST where only those paths of the analyser remain where the right side of the analyser match the left side of the bilingual FST. The prefixing is necessary since, as mentioned above, the bilingual dictionary is underspecified for inflectional tags such as definiteness, and so on.
+ on the analyser and the prefixed FST creates the FST where only those paths
+ of the analyser remain where the right side of the analyser match the left
+ side of the bilingual FST.
+ The prefixing is necessary since, as mentioned above, the bilingual dictionary
+ is underspecified for inflectional tags such as definiteness, and so on.
 \end_layout
 
 \begin_layout Standard
-
-The HFST solution works, but is missing many of the Apertium-specific features such as different types of tokenisation FST's, and it does not handle the fact that multiwords may split or change format before bilingual dictionary lookup. Also, HFST represents compounds with an optional transition from the end of the noun to the beginning of the noun dictionary -- so if 
+The HFST solution works, but is missing many of the Apertium-specific features
+ such as different types of tokenisation FST's, and it does not handle the
+ fact that multiwords may split or change format before bilingual dictionary
+ lookup.
+ Also, HFST represents compounds with an optional transition from the end
+ of the noun to the beginning of the noun dictionary -- so if 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2074,7 +2133,7 @@ frog.n
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2085,7 +2144,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2098,7 +2157,7 @@ fish.n
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2109,7 +2168,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2122,7 +2181,7 @@ fish.n
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2133,7 +2192,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2146,18 +2205,19 @@ frog.n+fish.n
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- would remain in the trimmed FST since the prefix matches. In addition, using HFST in language pairs whose data are all in 
+ would remain in the trimmed FST since the prefix matches.
+ In addition, using HFST in language pairs whose data are all in 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2170,7 +2230,7 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2181,12 +2241,11 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-
 Thus we decided to create a new tool within 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2199,7 +2258,7 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2210,7 +2269,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2223,18 +2282,20 @@ lt-trim
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. This tool should trim an analyser using a bilingual FST, creating a trimmed analyser, and handle all the 
+.
+ This tool should trim an analyser using a bilingual FST, creating a trimmed
+ analyser, and handle all the 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2247,18 +2308,19 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- multiwords and compounds, as well as letting us retain the special tokenisation features of 
+ multiwords and compounds, as well as letting us retain the special tokenisation
+ features of 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2271,20 +2333,20 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-. The end result should be the same as perfect manual trimming. The next section details its implementation.
+.
+ The end result should be the same as perfect manual trimming.
+ The next section details its implementation.
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
+\begin_layout Plain Layout
 Available from 
 \begin_inset CommandInset href
 LatexCommand href
@@ -2301,12 +2363,11 @@ target "http://example.com/anonymized-until-peer-review"
 \end_layout
 
 \begin_layout Section
-
 Implementation of 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2319,7 +2380,7 @@ lt-trim
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2330,32 +2391,51 @@ status collapsed
 \end_layout
 
 \begin_layout Subsection
-
 Prefixing the bilingual dictionary
 \end_layout
 
 \begin_layout Standard
-
-Apertium alphabets consist of symbol pairs, each with a left (serves as the input in a transducer) and right (output) symbol. Both the pairs and the symbols themselves, which can be either letters or tags, are identified by an integer. First, the identifiers of identical left-right pairs of the desired symbols are determined. In the case of intersecting transducers using depth-first traversal, the method implemented in Apertium, only the tags are desired, though the option to include letter pairs as well still exists due to the deprecated multiplicative method. The side from which the symbols are obtained is also able to be specified, though in the case of prefixing a bilingual dictionary, only the right (output) symbols are used. All of the symbol-pairs of the given alphabet are looped-through, and depending on which side was specified, the respective symbols are analyzed. The method differs between letters and tags. As the identifiers of letters, which are actually the letters themselves casted to integers, are consistent throughout all alphabets, the identifiers of letter pairs can be directly determined. The identifiers of tags, however, can differ, and so their individual identifiers must first be determined before that of their respective pairs. After the identifiers of the desired symbol pairs are determined, they are used to create loopbacks on the bilingual dictionary using the function appendDotStar. Transitions are created from the final state of the bilingual transducer that loop directly back with each of the identifiers.
+Apertium alphabets consist of symbol pairs, each with a left (serves as
+ the input in a transducer) and right (output) symbol.
+ Both the pairs and the symbols themselves, which can be either letters
+ or tags, are identified by an integer.
+ First, the identifiers of identical left-right pairs of the desired symbols
+ are determined.
+ In the case of intersecting transducers using depth-first traversal, the
+ method implemented in Apertium, only the tags are desired, though the option
+ to include letter pairs as well still exists due to the deprecated multiplicati
+ve method.
+ The side from which the symbols are obtained is also able to be specified,
+ though in the case of prefixing a bilingual dictionary, only the right
+ (output) symbols are used.
+ All of the symbol-pairs of the given alphabet are looped-through, and depending
+ on which side was specified, the respective symbols are analysed.
+ The method differs between letters and tags.
+ As the identifiers of letters, which are actually the letters themselves
+ cast to integers, are consistent throughout all alphabets, the identifiers
+ of letter pairs can be directly determined.
+ The identifiers of tags, however, can differ, and so their individual identifie
+rs must first be determined before that of their respective pairs.
+ After the identifiers of the desired symbol pairs are determined, they
+ are used to create loopbacks on the bilingual dictionary using the function
+ appendDotStar.
+ Transitions are created from the final state of the bilingual transducer
+ that loop directly back with each of the identifiers.
 \end_layout
 
 \begin_layout Subsection
-
 Moving lemq's
 \end_layout
 
 \begin_layout Subsection
-
 Intersection
 \end_layout
 
 \begin_layout Section
-
 Ending Dictionary Redundancy
 \end_layout
 
 \begin_layout Standard
-
 As mentioned in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2363,18 +2443,23 @@ reference "sec:solution"
 
 \end_inset
 
-, there are already language pairs in Apertium that have moved to a decomposed data model, using the HFST trimming method. At first, the HFST language pairs would also copy dictionaries, even if they were automatically trimmed, just to make them available for the language pair. But over the last year, we have created GNU Autotools scripts that let a language pair have a formal dependency on one more monolingual data packages
+, there are already language pairs in Apertium that have moved to a decomposed
+ data model, using the HFST trimming method.
+ At first, the HFST language pairs would also copy dictionaries, even if
+ they were automatically trimmed, just to make them available for the language
+ pair.
+ But over the last year, we have created GNU Autotools scripts that let
+ a language pair have a formal dependency on one more monolingual data packages
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
-So if a user asks their package manager, e.g. 
+\begin_layout Plain Layout
+So if a user asks their package manager, e.g.
+ 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2387,7 +2472,7 @@ apt-get
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2398,7 +2483,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2411,7 +2496,7 @@ apertium-foo-bar
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2422,7 +2507,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2435,7 +2520,7 @@ apertium-foo
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2446,7 +2531,7 @@ status collapsed
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2459,7 +2544,7 @@ apertium-bar
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2471,7 +2556,8 @@ status collapsed
 
 \end_inset
 
-. There is now an SVN module 
+.
+ There is now an SVN module 
 \family typewriter
 languages
 \family default
@@ -2479,10 +2565,7 @@ languages
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
-
+\begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
 target "http://wiki.apertium.org/wiki/Languages"
@@ -2494,11 +2577,14 @@ target "http://wiki.apertium.org/wiki/Languages"
 
 \end_inset
 
- where such monolingual data packages reside, and all of the new HFST-based languages pairs now use such dependencies, which are trimmed automatically, instead of making redundant dictionary copies. Disambiguation data is also fetched from the dependency instead of being redundantly copied.
+ where such monolingual data packages reside, and all of the new HFST-based
+ languages pairs now use such dependencies, which are trimmed automatically,
+ instead of making redundant dictionary copies.
+ Disambiguation data is also fetched from the dependency instead of being
+ redundantly copied.
 \end_layout
 
 \begin_layout Standard
-
 Most of the released and 
 \begin_inset Quotes eld
 \end_inset
@@ -2511,7 +2597,7 @@ stable
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2524,18 +2610,19 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
- and still have dictionary redundancy. With the new 
+ and still have dictionary redundancy.
+ With the new 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2548,7 +2635,7 @@ lt-trim
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2559,18 +2646,18 @@ status collapsed
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
+\begin_layout Plain Layout
 One could argue that there is still 
 \emph on
 cross-lingual
 \emph default
- redundancy in the bilingual dictionaries -- Apertium by design does not use an interlingua. Instead, the Apertium dictionary crossing tool 
+ redundancy in the bilingual dictionaries -- Apertium by design does not
+ use an interlingua.
+ Instead, the Apertium dictionary crossing tool 
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2583,7 +2670,7 @@ crossdics
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
@@ -2592,18 +2679,26 @@ status collapsed
 
 
 \begin_inset space ~
-
 \end_inset
 
 
 \begin_inset CommandInset citation
 LatexCommand cite
-after ""
 key "toral2011crossdics-it-ca"
 
 \end_inset
 
- provides ways to extract new translations during development: Given bilingual dictionaries between languages A-B and B-C, it creates a new bilingual dictionary between languages A-C. One argument for not using an interlingua during the translation process is that the dictionary resulting from automatic crossing needs a lot of manual cleaning to root out false friends, unidiomatic translations and other errors -- thus an interlingua would have to contain a lot more information than our current bilingual dictionaries in order to automatically disambiguate such issues. It would also require more linguistics knowledge of developers and heighten the entry barrier for new contributors.
+ provides ways to extract new translations during development: Given bilingual
+ dictionaries between languages A-B and B-C, it creates a new bilingual
+ dictionary between languages A-C.
+ One argument for not using an interlingua during the translation process
+ is that the dictionary resulting from automatic crossing needs a lot of
+ manual cleaning to root out false friends, unidiomatic translations and
+ other errors -- thus an interlingua would have to contain a lot more informatio
+n than our current bilingual dictionaries in order to automatically disambiguate
+ such issues.
+ It would also require more linguistics knowledge of developers and heighten
+ the entry barrier for new contributors.
 \end_layout
 
 \end_inset
@@ -2612,7 +2707,7 @@ key "toral2011crossdics-it-ca"
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 
 \backslash
@@ -2625,31 +2720,27 @@ lttoolbox
 \begin_inset ERT
 status collapsed
 
-\begin_layout Standard
+\begin_layout Plain Layout
 
 }
 \end_layout
 
 \end_inset
 
-, with its tokenisation, multiword and compounding features, and without having to make those pairs dependent on HFST.
+, with its tokenisation, multiword and compounding features, and without
+ having to make those pairs dependent on HFST.
 \end_layout
 
 \begin_layout Section*
-
 Acknowledgements
 \end_layout
 
 \begin_layout Standard
-
 Part of the development was funded by the Google Code-In
 \begin_inset Foot
 status collapsed
 
-
-\begin_layout Standard
-
-
+\begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
 target "https://code.google.com/gci/"
@@ -2665,8 +2756,6 @@ target "https://code.google.com/gci/"
 \end_layout
 
 \begin_layout Standard
-
- 
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "apertium"
