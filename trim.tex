@@ -291,22 +291,38 @@ implementation.\footnote{Available from
 
 
 \section{Implementation of \tool{lt-trim}}
+
 The implementation consists of two main parts: preprocessing the
 bilingual dictionary, and intersecting it with the analyser. 
 
 
 \subsection{Preprocessing the bilingual dictionary}
+
 Like monolingual dictionaries, bilingual ones can actually define
 several FST's, but in this case there is no tokenisation -- the
 distinction is only useful for organising the source, and has no
 effect on processing. So the first preprocessing step is to take the
-union of these FST's.
+union of these FST's. This is as simple as creating a new FST $f$,
+with epsilon transitions from $f$'s initial state, to each initial
+state in the union, and from each of their final states to $f$'s final
+state.
 
-Next, we append loopback transitions to the final state. Like mentioned
-in section \ref{sec:pipeline} above, the bilingual dictionary is
-underspecified for tags. We want an analyser entry ending in \ana{n.pl} to
-match the bilingual entry ending in \ana{n}; appending loopback
-transitions to the final state
+Next, we append loopback transitions to the final state. Like
+mentioned in section \ref{sec:pipeline} above, the bilingual
+dictionary is underspecified for tags. We want an analyser entry
+ending in \ana{n.pl} to match the bilingual entry ending in \ana{n};
+appending loopback transitions to the final state means the
+intersection will end up containing \ana{n.pl}. The next section
+explains the implementation of loopbacks. 
+
+The final preprocessing step is to give multiwords with inner
+inflection the same format as in the analyser. As mentioned in section
+\ref{sec:pipeline}, the analyser puts tags after the inflected part,
+and then the uninflected part of the multiword lemma. The bilingual
+dictionary (because it has to allow tag prefixes instead of requiring
+full tag sequences) has the uninflected part before the tags. Section
+\ref{sec:lemqmove} details how we move the uninflected part after the
+tags in preprocessing the bilingual dictionary.
 
 \subsection{Prefixing the bilingual dictionary}
 
@@ -336,6 +352,7 @@ of the bilingual transducer that loop directly back with each of the
 identifiers.
 
 \subsection{Moving lemq's}
+\label{sec:lemqmove}
 
 \subsection{Intersection}
 
