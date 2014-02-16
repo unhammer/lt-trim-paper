@@ -310,7 +310,7 @@ bilingual dictionary, and intersecting it with the analyser.
 \subsection{Preprocessing the bilingual dictionary}
 
 Like monolingual dictionaries, bilingual ones can actually define
-several FST's, but in this case there is no tokenisation -- the
+several FST's, but in this case the input is already tokenised -- the
 distinction is only useful for organising the source, and has no
 effect on processing. So the first preprocessing step is to take the
 union of these FST's. This is as simple as creating a new FST $f$,
