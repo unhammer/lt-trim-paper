@@ -347,12 +347,25 @@ can differ, and so their individual identifiers must first be
 determined before that of their respective pairs. After the
 identifiers of the desired symbol pairs are determined, they are used
 to create loopbacks on the bilingual dictionary using the function
-\texttt{appendDotStar}. Transitions are created from the final state
+$appendDotStar$. Transitions are created from the final state
 of the bilingual transducer that loop directly back with each of the
 identifiers.
 
-\subsection{Moving lemq's}
+\subsection{Moving uninflected lemma parts}
 \label{sec:lemqmove}
+
+To turn \ana{take\# out.vblex} into \ana{take.vblex\# out} and so on,
+we do a depth-first traversal looking for an occurrence of the \#
+symbol. Then we replace the \#-transition $t$ with one into the new
+transducer returned by $copyWithTagsFirst(t)$. This function traverses
+the FST from the end of $t$, building up two new
+transducers, $new$ and $lemq$. Until it sees the first tag, it adds
+all transitions found to $lemq$, and records which was the last $lemq$
+state it saw. Upon seeing the first tag, it finalises $lemq$ and adds a
+transition from the initial state of $new$. Subsequent tags are added
+as transitions from this state\footnote{We keep state-mapping tables
+    so we can refer to the $new$ state corresponding to each original
+    FST state.}
 
 \subsection{Intersection}
 
