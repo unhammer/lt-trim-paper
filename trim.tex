@@ -23,16 +23,25 @@
   Address1, Address2, Address3 \\
   author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\}
 
-\abstract{ 
-    A Finite State Transducer (FST) used as an analyser, whose output
-    is input to another FST, may have entries that don't pass through
-    the second FST. We discuss certain problems that this creates in
-    the Apertium machine translation platform (especially in the
-    interaction with multiwords and tokenisation) which have lead to
-    redundant copies of monolingual dictionaries. We introduce a new
-    tool to \emph{trim} such entries, which is made part of Apertium's
-    \tool{lttoolbox} package.  
-}
+\abstract{ The Free and Open Source rule-based machine translation
+  platform Apertium uses Finite State Transducers (FST's) for
+  analysis, where the output of the analyser is input to a second,
+  \emph{bilingual} FST. The bilingual FST is used to translate
+  analysed tokens (lemmas and tags) from one language to another. We
+  discuss certain problems that arise if the analyser contains entries
+  that do not pass through the bilingual FST. In particular, in trying
+  to avoid ``half-translated'' tokens, and avoid issues with the
+  interaction between multiwords and tokenisation, language pair
+  developers have created redundant copies of monolingual
+  dictionaries, manually customised to fit their language pair. This
+  redundancy gets in the way of sharing of data and bug fixes to
+  dictionaries between language pairs. It also makes it more
+  complicated to reuse dictionaries outside Apertium (e.g. in spell
+  checkers). We introduce a new tool to \emph{trim} the bad entries
+  from the analyser (using the bilingual FST), creating a new
+  analyser. The tool is made part of
+  Apertium's \tool{lttoolbox} package. \\
+  \newline \Keywords{FST, intersection, RBMT, dictionary redundancy} }
 
 \begin{document}
 
