@@ -116,7 +116,8 @@ for multiwords and compounds, and the automatic tokenisation of all
 \begin{itemize}
 \item a simple, non-multi-word like the noun \f{fish},
 \item a space-separated word like the noun \f{hairy frogfish}, which
-  will be analysed as one token even though it contains a space, but otherwise have no formal
+  will be analysed as one token even though it contains a space, but
+  will otherwise have no formal
   differences from other words,
 \item a multiword with \emph{inner inflection} like \f{takes out}; this is
   analysed as \ana{take<vblex><pri><p3><sg>\# out} and then, after
@@ -429,7 +430,7 @@ next \#.
 %we create new transitions in the new, trimmed FST.
 
 The first method we tried of intersecting FST's consisted of
-multiplying them.  This is a method that is simple to prove correct,
+multiplying them.  This is a method that is simple to prove correct;
 however, it was extremely inefficient, requiring a massive amount of
 memory.  First, the states of each transducer were multiplied.  This
 meant that every possible state pair, consisting of a state from the
@@ -461,7 +462,7 @@ is later encountered, the current position is recorded. The
 \ana{\#}-type multiwords alone can be easily handled if the bilingual
 dictionary is preprocessed to be in the same format as the monolingual
 dictionary; the tags must be moved before the \ana{\#}.  However, a
-combination of both \ana{+} and \ana{\#} requires the traversal of the
+combination of both \ana{+} and \ana{\#} requires that the traversal of the
 bilingual dictionary return to the state at which the \ana{+} was
 first encountered.
 
