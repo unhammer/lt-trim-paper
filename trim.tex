@@ -411,10 +411,10 @@ next \#.
 
 \subsection{Intersection}
 
-The intersection is implemented as a depth-first traversal of the
-analyser and the bilingual FST in lockstep; that is, we only follow
-transitions which are possible in both FST's. For the possible paths,
-we create new transitions in the new, trimmed FST.
+%The intersection is implemented as a depth-first traversal of the
+%analyser and the bilingual FST in lockstep; that is, we only follow
+%transitions which are possible in both FST's. For the possible paths,
+%we create new transitions in the new, trimmed FST.
 
 The first method we tried of intersecting FST's consisted of
 multiplying them.  This is a method that is simple to prove correct,
@@ -430,25 +430,26 @@ a significant number of matching symbols resulted in transitions to
 redundant and unreachable states.  These were removed with
 minimisation.
 
-It now implements the much more efficient method of intersection,
-depth-first traversal.  Both the monolingual dictionary and the
-bilingual dictionary are analysed at the same time; only transitions
-present in both are further followed and added to the trimmed
-transducer.  The process is managed through noting which states are to
-be analysed, the pair of states currently being analysed, the next
-pair of states, and the states which have already been seen.  Besides
-having reachable counterparts in both transducers, a state pair will
-only be added to the queue if it has not been analysed.  However, to
-handle multiwords, a few other things are necessary.
+The tool now implements the much more efficient method of
+intersection, depth-first traversal.  Both the monolingual dictionary
+and the bilingual dictionary are traversed at the same time, in
+lockstep; only transitions present in both are further followed and
+added to the trimmed transducer.  The process is managed through
+noting which states are to be processed, the pair of states currently
+being processed, the next pair of states, and the states which have
+already been seen.  Besides having reachable counterparts in both
+transducers, a state pair will only be added to the queue if it has
+not been seen yet.  However, to handle multiwords, a few other things
+are necessary.
 
 If a \ana{+} is encountered in the monolingual dictionary (indicating
 a \ana{+}-type multiword) the traversal of the bilingual dictionary
-resumes from its beginning. In addition, in the event that a \ana{#}
+resumes from its beginning. In addition, in the event that a \ana{\#}
 is later encountered, the current position is recorded. The
-\ana{#}-type multiwords alone can be easily handled if the bilingual
+\ana{\#}-type multiwords alone can be easily handled if the bilingual
 dictionary is preprocessed to be in the same format as the monolingual
-dictionary; the tags must be moved before the \ana{#}.  However, a
-combination of both \ana{+} and \ana{#} requires the traversal of the
+dictionary; the tags must be moved before the \ana{\#}.  However, a
+combination of both \ana{+} and \ana{\#} requires the traversal of the
 bilingual dictionary return to the state at which the \ana{+} was
 first encountered.
 
