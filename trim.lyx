@@ -2399,7 +2399,7 @@ Apertium alphabets consist of symbol pairs, each with a left (serves as
  the input in a transducer) and right (output) symbol.
  Both the pairs and the symbols themselves, which can be either letters
  or tags, are identified by an integer.
- First, the identifiers of identical left-right pairs of the desired symbols
+ First, the identifiers of identical left-right pairs of the desired symbols,
  are determined.
  In the case of intersecting transducers using depth-first traversal, the
  method implemented in Apertium, only the tags are desired, though the option
@@ -2419,7 +2419,7 @@ rs must first be determined before that of their respective pairs.
  After the identifiers of the desired symbol pairs are determined, they
  are used to create loopbacks on the bilingual dictionary using the function
  appendDotStar.
- Transitions are created from the final state of the bilingual transducer
+ Transitions are created from the final states of the bilingual transducer
  that loop directly back with each of the identifiers.
 \end_layout
 
@@ -2429,6 +2429,107 @@ Moving lemq's
 
 \begin_layout Subsection
 Intersection
+\end_layout
+
+\begin_layout Standard
+The first method of intersecting FST's in Apertium consisted of multiplying
+ them.
+ However, it was extremely inefficient, requiring a massive amount of memory.
+ First, the states of each transducer were multiplied.
+ This meant that every possible state pair, consisting of a state from the
+ monolingual dictionary and the bilingual dictionary, was assigned a state
+ in the trimmed transducer.
+ Next, each of the transitions were multiplied.
+ As the intersection is only concerned with the output of the monolingual
+ dictionary and the input of the bilingual dictionary, the respective symbols
+ had to match; though very many of them did not, a significant number of
+ matching symbols resulted in transitions to reduntant and unreachable states.
+ These were removed with minimization.
+\end_layout
+
+\begin_layout Standard
+Apertium now implements the much more efficient method of intersection,
+ depth-first traversal.
+ Both the monolingual dictionary and the bilingual dictionary are analyzed
+ at the same time; only transitions present in both are further followed
+ and added to the trimmed transducer.
+ The process is managed through noting which states are to be analyzed,
+ the pair of states currently being analyzed, the next pair of states, and
+ the states which have already been seen.
+ Besides having reachable counterparts in both transducers, a state pair
+ will only be added to the queue if it has not been analyzed.
+ However, to handle multiwords, a few other things are necessary.
+ If a 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+ is encoutered in the monolingual dictionary (indicating a 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+-type multiword) the traversal of the bilingual dictionary resumes from
+ its beginning.
+ In addition, in the event that a 
+\begin_inset Quotes eld
+\end_inset
+
+#
+\begin_inset Quotes erd
+\end_inset
+
+ is later encountered, the current position is recorded.
+ 
+\begin_inset Quotes eld
+\end_inset
+
+#
+\begin_inset Quotes erd
+\end_inset
+
+-type multiwords alone can be easily handled if the bilingual dictionary
+ if preprocessed to be in the same format as the monolingual dictionary;
+ the tags must be moved before the 
+\begin_inset Quotes eld
+\end_inset
+
+#.
+\begin_inset Quotes erd
+\end_inset
+
+ However, a combination of both 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+#
+\begin_inset Quotes erd
+\end_inset
+
+ requires the traversal of the bilingual dicitonary return to the state
+ at which the 
+\begin_inset Quotes eld
+\end_inset
+
++
+\begin_inset Quotes erd
+\end_inset
+
+ was first encountered.
 \end_layout
 
 \begin_layout Section

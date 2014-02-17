@@ -363,7 +363,7 @@ can differ, and so their individual identifiers must first be
 determined before that of their respective pairs. After the
 identifiers of the desired symbol pairs are determined, they are used
 to create loopbacks on the bilingual dictionary using the function
-$appendDotStar$. Transitions are created from the final state
+$appendDotStar$. Transitions are created from the final states
 of the bilingual transducer that loop directly back with each of the
 identifiers.
 
@@ -415,6 +415,42 @@ The intersection is implemented as a depth-first traversal of the
 analyser and the bilingual FST in lockstep; that is, we only follow
 transitions which are possible in both FST's. For the possible paths,
 we create new transitions in the new, trimmed FST.
+
+The first method we tried of intersecting FST's consisted of
+multiplying them.  This is a method that is simple to prove correct,
+however, it was extremely inefficient, requiring a massive amount of
+memory.  First, the states of each transducer were multiplied.  This
+meant that every possible state pair, consisting of a state from the
+monolingual dictionary and the bilingual dictionary, was assigned a
+state in the trimmed transducer.  Next, each of the transitions were
+multiplied.  As the intersection is only concerned with the output of
+the monolingual dictionary and the input of the bilingual dictionary,
+the respective symbols had to match; though very many of them did not,
+a significant number of matching symbols resulted in transitions to
+redundant and unreachable states.  These were removed with
+minimisation.
+
+It now implements the much more efficient method of intersection,
+depth-first traversal.  Both the monolingual dictionary and the
+bilingual dictionary are analysed at the same time; only transitions
+present in both are further followed and added to the trimmed
+transducer.  The process is managed through noting which states are to
+be analysed, the pair of states currently being analysed, the next
+pair of states, and the states which have already been seen.  Besides
+having reachable counterparts in both transducers, a state pair will
+only be added to the queue if it has not been analysed.  However, to
+handle multiwords, a few other things are necessary.
+
+If a \ana{+} is encountered in the monolingual dictionary (indicating
+a \ana{+}-type multiword) the traversal of the bilingual dictionary
+resumes from its beginning. In addition, in the event that a \ana{#}
+is later encountered, the current position is recorded. The
+\ana{#}-type multiwords alone can be easily handled if the bilingual
+dictionary is preprocessed to be in the same format as the monolingual
+dictionary; the tags must be moved before the \ana{#}.  However, a
+combination of both \ana{+} and \ana{#} requires the traversal of the
+bilingual dictionary return to the state at which the \ana{+} was
+first encountered.
 
 \section{Ending Dictionary Redundancy}
 
