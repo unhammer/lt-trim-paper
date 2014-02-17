@@ -23,13 +23,15 @@
   Address1, Address2, Address3 \\
   author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\}
 
-\abstract{
-  A Finite State Transducer (FST) used as an analyser, whose output is
-  input to another FST, may have entries that don't pass through the
-  second FST. We discuss certain problems that this creates in the
-  Apertium machine translation platform, and describe the development
-  of a tool to \emph{trim} such entries. The tool is made part of
-  Apertium's \tool{lttoolbox} package.
+\abstract{ 
+    A Finite State Transducer (FST) used as an analyser, whose output
+    is input to another FST, may have entries that don't pass through
+    the second FST. We discuss certain problems that this creates in
+    the Apertium machine translation platform (especially in the
+    interaction with multiwords and tokenisation) which have lead to
+    redundant copies of monolingual dictionaries. We introduce a new
+    tool to \emph{trim} such entries, which is made part of Apertium's
+    \tool{lttoolbox} package.  
 }
 
 \begin{document}
@@ -297,8 +299,9 @@ FST, creating a trimmed analyser, and handle all the \tool{lttoolbox}
 multiwords and compounds, as well as letting us retain the special
 tokenisation features of \tool{lttoolbox}. The end result should be
 the same as perfect manual trimming. The next section details  the
-implementation of \tool{lt-trim}.\footnote{Available from
-  \href{http://example.com/anonymized-until-peer-review}{http://example.com/anonymized-until-peer-review}.}
+implementation of \tool{lt-trim}.\footnote{Available in the SVN
+version of the \tool{lttoolbox} package, see
+\href{http://wiki.apertium.org/wiki/Installation}{http://wiki.apertium.org/wiki/Installation}.}
 
 
 \section{Implementation of \tool{lt-trim}}
