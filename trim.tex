@@ -314,9 +314,9 @@ several FST's, but in this case the input is already tokenised -- the
 distinction is only useful for organising the source, and has no
 effect on processing. So the first preprocessing step is to take the
 union of these FST's. This is as simple as creating a new FST $f$,
-with epsilon transitions from $f$'s initial state, to each initial
-state in the union, and from each of their final states to $f$'s final
-state.
+with epsilon (empty/unlabelled) transitions from $f$'s initial state,
+to each initial state in the union, and from each of their final
+states to $f$'s final state.
 
 Next, we append loopback transitions to the final state. Like
 mentioned in section \ref{sec:pipeline} above, the bilingual
@@ -453,19 +453,36 @@ combination of both \ana{+} and \ana{\#} requires the traversal of the
 bilingual dictionary return to the state at which the \ana{+} was
 first encountered.
 
+We also need some exceptions for epsilon transitions; the idea here is
+that if we see an epsilon in one transducer, we move across that
+epsilon without moving in the other transducer, and vice versa.
+Compound symbols in the analyser are treated similarly: we add the
+transitions to the trimmed analyser and move forward in the analyser
+without moving forward in the bilingual FST.
+
+To the end user (i.e. language pair developer), the tool is a simple
+command line program with three arguments: the input analyser FST, the
+input bilingual FST and the output trimmed analyser FST.
+
 \section{Ending Dictionary Redundancy}
 
 As mentioned in section \ref{sec:solution}, there are already language
 pairs in Apertium that have moved to a decomposed data model, using
-the \tool{HFST} trimming method. At first, the \tool{HFST} language pairs would also
-copy dictionaries, even if they were automatically trimmed, just to
-make them available for the language pair.  But over the last year, we
-have created GNU Autotools scripts that let a language pair have a
-formal dependency on one more monolingual data packages\footnote{So if
-  a user asks their package manager, e.g. \tool{apt-get}, to install
-  the language pair \tool{apertium-foo-bar}, it would automatically
-  install dependencies \tool{apertium-foo} and \tool{apertium-bar}
-  first.}. There is now an SVN module
+the \tool{HFST} trimming method. At first, the \tool{HFST} language
+pairs would also copy dictionaries, even if they were automatically
+trimmed, just to make them available for the language pair.  But over
+the last year, we have created scripts for our GNU Autotools-based
+build system that let a language pair have a formal dependency on one
+or more monolingual data packages\footnote{This both means that source
+    and compiled monolingual files are made available to the make
+    files of the language pair, and that the configure script warns if
+    monolingual data packages are missing. Packagers should be able to
+    use this so 
+    that if a user asks their package manager, e.g. \tool{apt-get}, to
+    install the language pair \tool{apertium-foo-bar}, it would
+automatically install dependencies \tool{apertium-foo} and
+\tool{apertium-bar} first, and use files from those packages.}.  There
+is now an SVN module
 \texttt{languages}\footnote{\href{http://wiki.apertium.org/wiki/Languages}{http://wiki.apertium.org/wiki/Languages}}
 where such monolingual data packages reside, and all of the new
 \tool{HFST}-based languages pairs now use such dependencies, which are
@@ -473,7 +490,7 @@ trimmed automatically, instead of making redundant dictionary copies.
 Disambiguation data is also fetched from the dependency instead of
 being redundantly copied.
 
-Most of the released and ``stable'' Apertium language pairs use
+But most of the released and ``stable'' Apertium language pairs use
 \tool{lttoolbox} and still have dictionary redundancy. With the new
 \tool{lt-trim} tool, it is finally possible to end the
 redundancy\footnote{One could argue that there is still
