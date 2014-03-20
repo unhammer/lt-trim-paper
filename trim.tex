@@ -17,11 +17,11 @@
 \title{FST Intersection: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
 % good word: Decomposition
 
-\name{Author1, Author2, Author3}
+\name{Matthew Marting, Kevin Brubeck Unhammer}
 
-\address{ Affiliation1, Affiliation2, Affiliation3 \\
-  Address1, Address2, Address3 \\
-  author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\}
+\address{St. David's School, Kaldera språkteknologi AS \\
+  Raleigh, NC., Stavanger, Norway \\
+  TODO@email.com, unhammer+apertium@mm.st \\}
 
 \abstract{ The Free and Open Source rule-based machine translation
   platform Apertium uses Finite State Transducers (FST's) for
@@ -175,43 +175,62 @@ of the analyser would be \ana{@fish<n><pl>}, and of the complete
 translation just \ana{@fish}. Given \f{*fishes}, a post-editor who
 knows both languages can immediately see what the original was, while
 the half-translated \ana{@fish} hides the inflection information in
-the source text. Just lemmatising the source text, which removes
-features like number, definiteness or tense can skew meaning.  But it
+the source text. Just lemmatising the source text – which removes
+features like number, definiteness or tense – can skew meaning. But it
 gets worse: Some languages inflect verbs for \emph{negation}, where
 the half-translated lemma would hide the fact that the meaning is
-negative.\footnote{For simple cases like this, a workaround is to
-    carry surface form information throughout the pipeline, but it
-fails with multiwords and compounds (described below), which are
-heavily used in many Apertium language pairs.}
+negative. For simple cases like this, a workaround is to carry surface
+form information throughout the pipeline, but this fails with
+multiwords and compounds (described below), which are heavily used in
+many Apertium language pairs.
 
-And, as mentioned above, a word not known to the bilingual FST might not
-have its tags translated (or translated correctly) either; when the
-transfer module tries to use the half-translated tags to determine
+And, as mentioned above, a word not known to the bilingual FST might
+not have its tags translated (or translated correctly) either. When
+the transfer module tries to use the half-translated tags to determine
 agreement, the \emph{context} of the half-translated word may have its
-meaning skewed as well.
+meaning skewed as well. For example, some nouns in Norwegian have only
+plural forms; when translating a singular form from Northern Sámi into
+Norwegian, the bilingual FST transfers the singular tag to a plural
+tag for such words. Structural transfer rules insert determiners which
+are inflected for number; if the noun were half-translated (thus with
+the singular tag of the input), we would output a determiner with the
+wrong number, thus the output has two badly translated words instead
+of untranslated one.
 
 Trying to write transfer rules to deal with half-translated tags also
 \emph{increases the complexity of transfer rules}. For example, if any
 noun can be missing its gender, that's one more exception to all rules
-that apply gender agreement (as well as any feature that interacts with
-gender).
+that apply gender agreement, as well as any feature that interacts
+with gender.
 
-Finally, there are issues with tokenisation and multiwords.
-Multiwords in Apertium are entries in the dictionaries that may
-consist of what would otherwise be several tokens. As an example, say
-you have \f{take} and \f{out} listed in your English dictionary, and
-they translate fine in isolation. Now, for Catalan we want to
-translate the phrasal verb \f{take out} into a single word \f{treure},
-so we list it as a multiword with \emph{inner inflection} in the
-English dictionary. This makes any occurrence of forms of \f{take out}
-get a single-token multiword analysis, e.g. \f{takes out} gets the
-analysis \ana{take<vblex><pri><p3><sg>\# out}. But then the whole multiword
-\emph{has} to be in the bilingual dictionary if it is to be
-translated. If another language pair using the same English dictionary
-has both \f{take} and \f{out} in its bilingual dictionary, but not the
-multiword, the individual words in isolation may be translated, but
-whenever the whole string together is seen, it will only be
-lemmatised, not translated.
+Then there are the issues with tokenisation and multiwords. Multiwords
+are entries in the dictionaries that may consist of what would
+otherwise be several tokens. As an example, say you have \f{take} and
+\f{out} listed in your English dictionary, and they translate fine in
+isolation. When translating to Catalan, we want the phrasal verb
+\f{take out} to turn into a single word \f{treure}, so we list it as a
+multiword with \emph{inner inflection} in the English dictionary. This
+makes any occurrence of forms of \f{take out} get a single-token
+multiword analysis, e.g. \f{takes out} gets the analysis
+\ana{take<vblex><pri><p3><sg>\# out}. But then the whole multiword
+\emph{has} to be in the bilingual dictionary if the two words together
+are to be translated. If another language pair using the same English
+dictionary has both \f{take} and \f{out} in its bilingual dictionary,
+but not the multiword, the individual words in isolation will be
+translated, but whenever the whole string \f{take out} is seen, it
+will only be lemmatised, not translated. This is both frustrating for
+the language pair developer, and wasted effort in the case where we
+don't \emph{need} the multiword translation.
+
+Assuming we could live with the wasted effort and transfer complexity,
+we could try to carry input surface forms throughout the pipeline to
+at least avoid showing lemmatised forms. But here we run into another
+problem. Compounds and multiwords that consist of several lemmas are
+split into two units before transfer, e.g. the French contraction
+\f{au} with the analysis \ana{à<pr>+le<det><def><m><sg>} turns into
+\ana{à<pr>} and \ana{le<det><def><m><sg>}, while the Norwegian
+compound \f{vasskokaren} turns into
+\ana{vatn<n><nt><sg><ind><cmp>+kokar<n><m><sg><def>}.
 
 Due to these issues, most language pairs in Apertium have a separate
 copy of each monolingual dictionary, manually \emph{trimmed} to match
@@ -531,8 +550,23 @@ to do in converting existing language pairs to a decomposed data
 model. Monolingual dictionaries have to be merged, and the various
 language pairs may have altered the tag sets in more or less subtle
 ways that can affect disambiguation, transfer and other parts of the
-pipeline. However, this is a one-time job, and any new languages added
-to Apertium can immediately reap the benefits.
+pipeline. 
+
+To give an example, merging the Norwegian Bokmål dictionaries of the
+language pairs Northern Sámi-Bokmål and Nynorsk-Bokmål (including
+changes to transfer and to the other involved dictionaries) took about
+three hours of work. However, this kind of merge work happened often
+in the past anyway when major changes happened to either dictionary;
+from now on it can be a one-time job. Future additions and changes to
+the common apertium-nob module will benefit both language pairs.
+
+Any new languages added to Apertium can immediately reap the benefits
+of the tool, without this manual merge work; this goes for many of the
+in-development pairs too (e.g. the English-Norwegian language pair now
+depends on the Bokmål and Nynorsk monolingual package).
+
+%\section{Conclusion}
+% TODO
 
 \section*{Acknowledgements}
 Part of the development was funded by the Google
