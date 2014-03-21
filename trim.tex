@@ -50,18 +50,18 @@
 
 \section{Introduction and background}
 
-Apertium~\cite{forcada2011afp} is a rule-based machine translation
-platform, where the data and tools are released under a Free and Open
-Source license (primarily GNU GPL). Apertium translators use Finite
-State Transducers (FST's) for morphological analysis, bilingual
-dictionary lookup and generation of surface forms; most language
-pairs\footnote{A \emph{language pair} is a set of resources to
-    translate between a certain set of languages in Apertium, e.g.
-Basque--Spanish.} created with Apertium use the lttoolbox FST
-library for compiling XML dictionaries into binary FST's and for
-processing text with such FST's. This paper discusses the problem of
-redundancy in monolingual dictionaries in Apertium, and introduces a
-new tool to help solve it.
+Apertium~\cite{forcada2011afp}\footnote{\href{http://wiki.apertium.org/}{http://wiki.apertium.org/}}
+is a rule-based machine translation platform, where the data and tools
+are released under a Free and Open Source license (primarily GNU GPL).
+Apertium translators use Finite State Transducers (FST's) for
+morphological analysis, bilingual dictionary lookup and generation of
+surface forms; most language pairs\footnote{A \emph{language pair} is
+  a set of resources to translate between a certain set of languages
+  in Apertium, e.g. Basque--Spanish.} created with Apertium use the
+lttoolbox FST library for compiling XML dictionaries into binary FST's
+and for processing text with such FST's. This paper discusses the
+problem of redundancy in monolingual dictionaries in Apertium, and
+introduces a new tool to help solve it.
 
 The following sections give some background on how FST's fit into
 Apertium, as well as the specific capabilities of lttoolbox
@@ -284,17 +284,16 @@ sizes varying from 36,798 lines to 204,447 lines.
 The redundancy is not limited to Spanish; in SVN trunk we also find 10
 English, 7 Catalan, and 4 French dictionaries. If we include
 unreleased pairs, these numbers turn to 19, 28, 8 and 16,
-respectively.
-In the worst case, if you add some words to an English dictionary,
-there are still 27 dictionaries which miss out on your work.  The
-numbers get even worse if we look at potential new language pairs.
-Given 3 languages, you ``only'' need $3*(3-1)=6$ monolingual
+respectively. In the worst case, if you add some words to an English
+dictionary, there are still 27 dictionaries which miss out on your
+work. The numbers get even worse if we look at potential new language
+pairs. Given 3 languages, you only need $3*(3-1)=6$ monolingual
 dictionaries for all possible pairs (remember that a dictionary
 provides both an analyser and a generator). But for 4 languages, you
-need $4*(4-1)=12$ dictionaries; if we were to  create all possible
+need $4*(4-1)=12$ dictionaries; if we were to create all possible
 translation pairs of the 34 languages appearing in currently released
-language pairs, we would need $34*(34-1)=1122$ monolingual dictionaries,
-where 34 ought to be enough.
+language pairs, we would need $34*(34-1)=1122$ monolingual
+dictionaries, where 34 ought to be enough.
 
 \begin{figure}[h]
   \begin{center}
@@ -315,12 +314,13 @@ where 34 ought to be enough.
 The lack of shared monolingual dictionaries also means that other
 monolingual resources, like disambiguator data, is not shared, since
 the effort of copying files is less than the effort of letting one
-module depend on another for so little gain. And it complicates the reuse
-of Apertium's extensive~\cite{tyers2010fosresources} set of language
-resources for other systems: If you want to create a speller for some
-language supported by Apertium, you either have to manually merge
-dictionaries in order to gain from all the work, or (more likely) pick
-the largest one and hope it's good enough.
+module depend on another for so little gain. And it complicates the
+reuse of Apertium's extensive~\cite{tyers2010fosresources} set of
+language resources for other systems: If you want to create a speller
+for some language supported by Apertium (now possible for lttoolbox
+dictionaries via HFST~\cite{pirinen2012compiling}), you either have to
+manually merge dictionaries in order to gain from all the work, or
+(more likely) pick the largest one and hope it's good enough.
 
 \subsection{A Solution: Intersection}
 \label{sec:solution}
@@ -333,43 +333,48 @@ with the input (or \textbf{left}) side of the bilingual FST, producing
 a \emph{trimmed} FST. We call this process \emph{trimming}.
 
 Some recent language pairs in Apertium use the alternative, Free and
-Open Source FST framework HFST~\cite{linden2011hfst}\footnote{Partly
+Open Source FST framework
+HFST~\cite{linden2011hfst}\footnote{\href{http://hfst.sourceforge.net/}{http://hfst.sourceforge.net/}}\footnote{Partly
   due to available data in that formalism, partly due to features
   missing from lttoolbox like \emph{flag diacritics}.}. Using HFST,
 one can create a "prefixed" version of the bilingual FST, this is is
 the concatenation of the bilingual FST and the regular expression
-\ana{.*}, i.e. match any symbol zero or more times. Then the command
-\tool{hfst-compose-intersect} on the analyser and the prefixed FST
-creates the FST where only those paths of the analyser remain where
-the right side of the analyser match the left side of the bilingual
-FST. The prefixing is necessary since, as mentioned above, the
-bilingual dictionary is underspecified for tag suffixes (typically
+\ana{.*}, i.e. match any symbol zero or more times.\footnote{In this
+  article, we use the regular POSIX format for regular expression; the
+  Xerox format used in HFST-compiled dictionaries differs.} Then the
+command \tool{hfst-compose-intersect} on the analyser and the prefixed
+FST creates the FST where only those paths of the analyser remain
+where the right side of the analyser match the left side of the
+bilingual FST. The prefixing is necessary since, as mentioned above,
+the bilingual dictionary is underspecified for tag suffixes (typically
 inflectional tags such as definiteness or tense, as opposed to
 lemma-identifying tags such as part of speech and noun gender).
 
-The HFST solution works, but is missing many of the
-Apertium-specific features such as different types of tokenisation
-FST's, and it does not handle the fact that multiwords may split or
-change format before bilingual dictionary lookup. Also, unlike
-lttoolbox, HFST represents compounds with an optional
-transition from the end of the noun to the beginning of the noun
-dictionary -- so if \ana{frog<n>} and \ana{fish<n>} were in the
+The HFST solution works, but is missing many of the Apertium-specific
+features such as different types of tokenisation FST's, and it does
+not handle the fact that multiwords may split or change format before
+bilingual dictionary lookup. Also, unlike lttoolbox, most of the
+Apertium dictionaries compiled with HFST represent compounds with an
+optional transition from the end of the noun to the beginning of the
+noun dictionary -- so if \ana{frog<n>} and \ana{fish<n>} were in the
 analyser, but \ana{fish<n>} were missing from the bilingual FST,
 \ana{frog<n>+fish<n>} would remain in the trimmed FST since the prefix
-\ana{frog<n>.*} matches. In addition, using HFST in language
-pairs whose data are all in lttoolbox format would introduce a
-new (and rather complex) dependency both for developers, packagers and
-users who compile from source.
+\ana{frog<n>.*} matches. In addition, using HFST in language pairs
+whose data are all in lttoolbox format would introduce a new (and
+rather complex) dependency both for developers, packagers and users
+who compile from source.
 
 Thus we decided to create a new tool within lttoolbox, called
 \tool{lt-trim}. This tool should trim an analyser using a bilingual
 FST, creating a trimmed analyser, and handle all the lttoolbox
 multiwords and compounds, as well as letting us retain the special
-tokenisation features of lttoolbox. The end result should be
-the same as perfect manual trimming. The next section details  the
+tokenisation features of lttoolbox. The end result should be the same
+as perfect manual trimming. The next section details the
 implementation of \tool{lt-trim}.\footnote{Available in the SVN
-version of the lttoolbox package, see
-\href{http://wiki.apertium.org/wiki/Installation}{http://wiki.apertium.org/wiki/Installation}.}
+  version of the lttoolbox package, see
+  \href{http://wiki.apertium.org/wiki/Installation}{http://wiki.apertium.org/wiki/Installation},
+  the code itself is at
+  \href{https://svn.code.sf.net/p/apertium/svn/trunk/lttoolbox}{https://svn.code.sf.net/p/apertium/svn/trunk/lttoolbox}.}
 
 
 \section{Implementation of \tool{lt-trim}}
@@ -384,10 +389,10 @@ Like monolingual dictionaries, bilingual ones can actually define
 several FST's, but in this case the input is already tokenised -- the
 distinction is only useful for organising the source, and has no
 effect on processing. So the first preprocessing step is to take the
-union of these FST's. This is as simple as creating a new FST $f$,
-with epsilon (empty/unlabelled) transitions from $f$'s initial state,
+union of these FST's. This is as simple as creating a new FST $F$,
+with epsilon (empty/unlabelled) transitions from $F$'s initial state,
 to each initial state in the union, and from each of their final
-states to $f$'s final state.
+states to $F$'s final state.
 
 Next, we append loopback transitions to the final state. Like
 mentioned in section \ref{sec:pipeline} above, the bilingual
@@ -413,28 +418,20 @@ preprocessing the bilingual dictionary.
 
 \subsection{Prefixing the bilingual dictionary}
 
-Apertium alphabets consist of symbol pairs, each with a left (serves
-as the input in a transducer) and right (output) symbol. Both the
-pairs and the symbols themselves, which can be either letters or tags,
-are identified by an integer. First, the identifiers of identical
-left-right pairs of the desired symbols are determined. In the case of
-intersecting transducers using depth-first traversal, the method
-implemented in Apertium, only the tags are desired. The side from
-which the symbols are obtained is also able to be specified, though in
-the case of prefixing a bilingual dictionary, only the right (output)
-symbols are used. All of the symbol-pairs of the given alphabet are
-looped-through, and depending on which side was specified, the
-respective symbols are analysed. The method differs between letters
-and tags. As the identifiers of letters, which are actually the
-letters themselves cast to integers, are consistent throughout all
-alphabets, the identifiers of letter pairs can be directly determined.
-The identifiers of tags, however, can differ, and so their individual
-identifiers must first be determined before that of their respective
-pairs. After the identifiers of the desired symbol pairs are
-determined, they are used to create loopbacks on the bilingual
-dictionary using the function $appendDotStar$. Transitions are created
-from the final states of the bilingual transducer that loop directly
-back with each of the identifiers.
+The lttoolbox FST \emph{alphabets} consist of symbol pairs, each with
+a left (serves as the input in a transducer) and right (output)
+symbol. Both the pairs and the symbols themselves, which can be either
+letters or tags, are identified by an integer. First, we loop through
+analyser symbol-pairs, collecting identifiers of those where the
+right-side is a tag. Then for all these tags, we add new symbol-pairs
+with that tag on both sides to the bilingual FST.
+
+These are used to create loopbacks in the bilingual FST using the
+function $appendDotStar$. Transitions are created from the final
+states of the bilingual transducer that loop directly back with each
+of the identifiers. If we call the set of tag symbol-pairs captured
+from the analyser $T$, and the bilingual FST $B$, the prefixed
+bilingual FST is $B T*$.
 
 \subsection{Moving uninflected lemma parts}
 \label{sec:lemqmove}
@@ -486,30 +483,42 @@ next \#.
 %we create new transitions in the new, trimmed FST.
 
 The first method we tried of intersecting FST's consisted of
-multiplying them.  This is a method that is simple to prove correct;
+multiplying them. This is a method that is simple to prove correct;
 however, it was extremely inefficient, requiring a massive amount of
-memory.  First, the states of each transducer were multiplied.  This
+memory. First, the states of each transducer were multiplied. This
 meant that every possible state pair, consisting of a state from the
 monolingual dictionary and the bilingual dictionary, was assigned a
-state in the trimmed transducer.  Next, each of the transitions were
-multiplied.  As the intersection is only concerned with the output of
+state in the trimmed transducer. Next, each of the transitions were
+multiplied. As the intersection is only concerned with the output of
 the monolingual dictionary and the input of the bilingual dictionary,
 the respective symbols had to match; though very many of them did not,
 a significant number of matching symbols resulted in transitions to
-redundant and unreachable states.  These were removed with
+redundant and unreachable states. These were removed with
 minimisation.
 
 The tool now implements the much more efficient method of
-intersection, depth-first traversal.  Both the monolingual dictionary
+intersection, depth-first traversal. Both the monolingual dictionary
 and the bilingual dictionary are traversed at the same time, in
 lockstep; only transitions present in both are further followed and
-added to the trimmed transducer.  The process is managed through
-noting which states are to be processed, the pair of states currently
-being processed, the next pair of states, and the states which have
-already been seen.  Besides having reachable counterparts in both
-transducers, a state pair will only be added to the queue if it has
-not been seen yet.  However, to handle multiwords, a few other things
-are necessary.
+added to the trimmed transducer. This depth-first traversal method
+uses memory and time comparative to regular compilation in
+lttoolbox.\footnote{When testing on Norwegian Nynorsk-Bokmål, with
+  64152 entries in the bilingual dictionary and 179369 in the full
+  Bokmål monolingual dictionary, the trimming memory usage is lower
+  than with monolingual compilation (under 10 \% on a 4 GB machine),
+  and time is down from 20 to 10 seconds. With English-Catalan, with
+  27461 entries in the bilingual dictionary and 31784 in the Catalan
+  dictionary and many multiwords, the trimming memory usage is about
+  double of the monolingual compilation (still under 10 \%) and time
+  is up from 9 to 13 seconds.}
+
+The process is managed through noting which states are to be
+processed, the pair of states currently being processed, the next pair
+of states, and the states which have already been seen. Besides having
+reachable counterparts in both transducers, a state pair will only be
+added to the queue if it has not been seen yet.
+
+However, to handle multiwords, a few other things are necessary.
 
 If a \ana{+} is encountered in the monolingual dictionary (indicating
 a \ana{+}-type multiword) the traversal of the bilingual dictionary
@@ -532,8 +541,7 @@ without moving forward in the bilingual FST.
 \subsection{Using the tool}
 To the end user (i.e. language pair developer), the tool is a simple
 command line program with three arguments: the input analyser FST, the
-input bilingual FST and the output trimmed analyser FST. It is
-typically called from makefiles in Apertium.
+input bilingual FST and the output trimmed analyser FST. 
 
 % TODO: runtime is about the same as compile-time
 
@@ -563,7 +571,7 @@ trimmed automatically, instead of making redundant dictionary copies.
 Disambiguation data is also fetched from the dependency instead of
 being redundantly copied.
 
-But most of the released and ``stable'' Apertium language pairs use
+But most of the released and stable Apertium language pairs use
 lttoolbox and still have dictionary redundancy. With the new
 \tool{lt-trim} tool, it is finally possible to end the
 redundancy\footnote{One could argue that there is still
@@ -581,10 +589,10 @@ redundancy\footnote{One could argue that there is still
   information than our current bilingual dictionaries in order to
   automatically disambiguate such issues. It would also require more
   linguistics knowledge of developers and heighten the entry barrier
-  for new contributors.} for the pairs which use lttoolbox,
-with its tokenisation, multiword and compounding features, and without
-having to make those pairs dependent on a whole other FST framework
-simply for compilation.
+  for new contributors.} for the pairs which use lttoolbox, with its
+tokenisation, multiword and compounding features, and without having
+to make those pairs dependent on a whole other FST framework simply
+for compilation.
 
 The tool has only recently been released, and there is still much work
 to do in converting existing language pairs to a decomposed data
@@ -606,8 +614,16 @@ of the tool, without this manual merge work; this goes for many of the
 in-development pairs too (e.g. the English-Norwegian language pair now
 depends on the Bokmål and Nynorsk monolingual package).
 
-%\section{Conclusion}
-% TODO
+\section{Conclusion}
+
+In this article, we have presented a new tool to trim monolingual
+dictionaries to fit the data in Apertium language pairs. The tool has
+already been implemented and used in several language pairs, starting
+the process to end monolingual dictionary redundancy.
+
+In future, we plan to research how to deal with compounds when
+trimming HFST dictionaries, as well as further merging monolingual
+dictionaries.
 
 \section*{Acknowledgements}
 Part of the development was funded by the Google
