@@ -14,14 +14,15 @@
 \newcommand{\f}[1]{`#1'}
 \newcommand{\tool}[1]{\texttt{#1}}
 
-\title{FST Intersection: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
+\title{FST Trimming: Ending Dictionary Redundancy in Apertium} % TITLE TODO ugh
 % good word: Decomposition
 
 \name{Matthew Marting, Kevin Brubeck Unhammer}
 
 \address{St. David's School, Kaldera språkteknologi AS \\
   Raleigh, NC., Stavanger, Norway \\
-  TODO@email.com, unhammer+apertium@mm.st \\}
+  % TODO@email.com
+  ∅, unhammer+apertium@mm.st \\}
 
 \abstract{ The Free and Open Source rule-based machine translation
   platform Apertium uses Finite State Transducers (FST's) for
@@ -41,7 +42,7 @@
   from the analyser (using the bilingual FST), creating a new
   analyser. The tool is made part of
   Apertium's lttoolbox package. \\
-  \newline \Keywords{FST, intersection, RBMT, dictionary redundancy} }
+  \newline \Keywords{FST, RBMT, dictionary-redundancy} }
 
 \begin{document}
 
@@ -176,24 +177,42 @@ translation just \ana{@fish}. Given \f{*fishes}, a post-editor who
 knows both languages can immediately see what the original was, while
 the half-translated \ana{@fish} hides the inflection information in
 the source text. Just lemmatising the source text – which removes
-features like number, definiteness or tense – can skew meaning. But it
-gets worse: Some languages inflect verbs for \emph{negation}, where
-the half-translated lemma would hide the fact that the meaning is
-negative. For simple cases like this, a workaround is to carry surface
-form information throughout the pipeline, but this fails with
-multiwords and compounds (described below), which are heavily used in
-many Apertium language pairs.
+features like number, definiteness or tense – can skew meaning. For
+example, if the input were the Norwegian Bokmål \f{Sonny gikk til
+  hundene}, meaning ``Sonny's life went to ruin'', a Norwegian Nynorsk
+translator seeing \f{Sonny gjekk til @hund} would have to look at the
+larger context (or the original) to infer that it was the idiomatic
+meaning, and not ``Sonny went to (a) dog''. Similarly, in the Bokmål
+sentence \f{To milliarder ødela livet}, literally ``Two billions
+[money] destroyed the life'', the definite form is used to mean ``his
+life''; since the lemma of \f{livet} is ambiguous with the plural, the
+half-translated \f{To milliarder ødela @liv} could just as well mean
+``Two billions destroyed lives''.\footnote{Examples from
+  \href{http://www.bt.no/bergenpuls/litteratur/Variabelt-fra-Nesbo-3081811.html}{http://www.bt.no/bergenpuls/litteratur/Variabelt-fra-Nesbo-3081811.html}
+  and
+  \href{http://www.nettavisen.no/2518369.html}{http://www.nettavisen.no/2518369.html}.}
+But it gets worse: Some languages inflect verbs for \emph{negation},
+where the half-translated lemma would hide the fact that the meaning
+is negative. When translating from Turkish, if you see \f{@öl}, you
+would definitely need more context or the original to know whether it
+was e.g. \f{öldürdü} ``s/he/it killed'' or \f{öldürmedi} ``s/he/it did
+not kill'' – if the MT is used for gisting, where the user doesn't
+know the source language, this becomes particularly troublesome. For
+single-token cases like this, a workaround for the post-editor is to
+carry surface form information throughout the pipeline, but as we will
+see below, this fails with multiwords and compounds, which are heavily
+used in many Apertium language pairs.
 
-And, as mentioned above, a word not known to the bilingual FST might
-not have its tags translated (or translated correctly) either. When
-the transfer module tries to use the half-translated tags to determine
-agreement, the \emph{context} of the half-translated word may have its
-meaning skewed as well. For example, some nouns in Norwegian have only
-plural forms; when translating a singular form from Northern Sámi into
-Norwegian, the bilingual FST transfers the singular tag to a plural
-tag for such words. Structural transfer rules insert determiners which
-are inflected for number; if the noun were half-translated (thus with
-the singular tag of the input), we would output a determiner with the
+A word not known to the bilingual FST might not have its tags
+translated (or translated correctly) either. When the transfer module
+tries to use the half-translated tags to determine agreement, the
+\emph{context} of the half-translated word may have its meaning skewed
+as well. For example, some nouns in Norwegian have only plural forms;
+when translating a singular form from Northern Sámi into Norwegian,
+the bilingual FST transfers the singular tag to a plural tag for such
+words. Structural transfer rules insert determiners which are
+inflected for number; if the noun were half-translated (thus with the
+singular tag of the input), we would output a determiner with the
 wrong number, thus the output has two badly translated words instead
 of untranslated one.
 
