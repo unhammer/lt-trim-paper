@@ -344,11 +344,11 @@ a \emph{trimmed} FST. We call this process \emph{trimming}.
 
 Some recent language pairs in Apertium use the alternative, Free and
 Open Source FST framework
-HFST~\cite{linden2011hfst}\footnote{\url{http://hfst.sourceforge.net/}}\footnote{Partly
+HFST~\cite{linden2011hfst}.\footnote{\url{http://hfst.sourceforge.net/}}\footnote{Partly
   due to available data in that formalism, partly due to features
-  missing from lttoolbox like \emph{flag diacritics}.}. Using HFST,
-one can create a "prefixed" version of the bilingual FST, this is is
-the concatenation of the bilingual FST and the regular expression
+  missing from lttoolbox like \emph{flag diacritics}.} Using HFST, one
+can create a "prefixed" version of the bilingual FST, this is is the
+concatenation of the bilingual FST and the regular expression
 \ana{.*}, i.e. match any symbol zero or more times.\footnote{In this
   article, we use the regular POSIX format for regular expression; the
   Xerox format used in HFST-compiled dictionaries differs.} Then the
