@@ -2405,9 +2405,9 @@ Apertium alphabets consist of symbol pairs, each with a left (serves as
  method implemented in Apertium, only the tags are desired, though the option
  to include letter pairs as well still exists due to the deprecated multiplicati
 ve method.
- The side from which the symbols are obtained is also able to be specified,
- though in the case of prefixing a bilingual dictionary, only the right
- (output) symbols are used.
+ (See Section 2.3) The side from which the symbols are obtained is also able
+ to be specified, though in the case of prefixing a bilingual dictionary,
+ only the right (output) symbols are used.
  All of the symbol-pairs of the given alphabet are looped-through, and depending
  on which side was specified, the respective symbols are analysed.
  The method differs between letters and tags.
@@ -2434,7 +2434,8 @@ Intersection
 \begin_layout Standard
 The first method of intersecting FST's in Apertium consisted of multiplying
  them.
- However, it was extremely inefficient, requiring a massive amount of memory.
+ However, it was extremely inefficient and crippled every system it was
+ tested on when trimming real Apertium dictionaries.
  First, the states of each transducer were multiplied.
  This meant that every possible state pair, consisting of a state from the
  monolingual dictionary and the bilingual dictionary, was assigned a state
@@ -2450,15 +2451,11 @@ The first method of intersecting FST's in Apertium consisted of multiplying
 \begin_layout Standard
 Apertium now implements the much more efficient method of intersection,
  depth-first traversal.
- Both the monolingual dictionary and the bilingual dictionary are analyzed
- at the same time; only transitions present in both are further followed
- and added to the trimmed transducer.
- The process is managed through noting which states are to be analyzed,
- the pair of states currently being analyzed, the next pair of states, and
- the states which have already been seen.
- Besides having reachable counterparts in both transducers, a state pair
- will only be added to the queue if it has not been analyzed.
- However, to handle multiwords, a few other things are necessary.
+ The monolingual and bilingual dictionaries are traversed in lockstep.
+ Only transitions of the monolingual dictionary whose output match the input
+ of their cooresponding transition in the bilingual dictionary are included
+ in the trimmed transducer.
+ To handle multiwords, a few other things are necessary.
  If a 
 \begin_inset Quotes eld
 \end_inset
