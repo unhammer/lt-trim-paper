@@ -492,6 +492,23 @@ after the final state $s$, the state after the
 Finally, we return $R'$ from $copyWithTagsFirst$ and look for the next
 \# in $B$.
 
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.5]{bi.eps}
+    \caption{Input bilingual FST}
+    \label{fig:bi-prefixed}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.5]{bi-prefixed.eps}
+    \caption{Fully preprocessed bilingual FST}
+    \label{fig:bi-prefixed}
+  \end{center}
+\end{figure}
+
+
 \subsection{Intersection}
 
 %The intersection is implemented as a depth-first traversal of the
@@ -538,6 +555,23 @@ dictionary, with the tags moved before the \ana{\#} as described
 above. However, a combination of both \ana{+} and \ana{\#} requires
 that the traversal of the bilingual dictionary return to the state at
 which the \ana{+} was first encountered.
+
+% TODO: not enough space for these :-/
+% \begin{figure}[h]
+%   \begin{center}
+%     \includegraphics[scale=0.5]{mono.eps}
+%     \caption{Input monolingual FST}
+%     \label{fig:mono}
+%   \end{center}
+% \end{figure}
+
+% \begin{figure}[h]
+%   \begin{center}
+%     \includegraphics[scale=0.5]{trimmed.eps}
+%     \caption{Trimmed monolingual FST}
+%     \label{fig:trimmed}
+%   \end{center}
+% \end{figure}
 
 We also need some exceptions for epsilon transitions; the idea here is
 that if we see an epsilon in one transducer, we move across that

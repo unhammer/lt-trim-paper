@@ -1,6 +1,6 @@
 # From http://www.wlug.org.nz/LatexMakefiles
 TARGET=trim
-FIGURES=pairs-before.eps pairs-after.eps
+FIGURES=pairs-before.eps pairs-after.eps mono.eps bi.eps bi-prefixed.eps trimmed.eps
 
 # make pdf by default
 all: ${TARGET}.pdf
