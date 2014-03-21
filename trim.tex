@@ -529,9 +529,13 @@ Compound symbols in the analyser are treated similarly: we add the
 transitions to the trimmed analyser and move forward in the analyser
 without moving forward in the bilingual FST.
 
+\subsection{Using the tool}
 To the end user (i.e. language pair developer), the tool is a simple
 command line program with three arguments: the input analyser FST, the
-input bilingual FST and the output trimmed analyser FST.
+input bilingual FST and the output trimmed analyser FST. It is
+typically called from makefiles in Apertium.
+
+% TODO: runtime is about the same as compile-time
 
 \section{Ending Dictionary Redundancy}
 
