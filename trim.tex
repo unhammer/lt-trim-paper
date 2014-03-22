@@ -307,7 +307,7 @@ dictionaries, where 34 ought to be enough.
 
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[scale=0.5]{pairs-before.eps}
+    \includegraphics[scale=0.7]{pairs-before.eps}
     \caption{Current number of monodixes with pairs of four languages}
     \label{fig:monodixes-current}
   \end{center}
@@ -315,7 +315,7 @@ dictionaries, where 34 ought to be enough.
 
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[scale=0.5]{pairs-after.eps}
+    \includegraphics[scale=0.7]{pairs-after.eps}
     \caption{Ideal number of monodixes with four languages}
     \label{fig:monodixes-ideally}
   \end{center}
@@ -451,30 +451,22 @@ To turn \ana{take\# out<vblex>.*} into \ana{take<vblex>.*\# out} and
 so on, we do a depth-first traversal looking for a transition labelled
 with the \# symbol. Then we replace the \#-transition $t$ with one
 into the new transducer returned by $copyWithTagsFirst(t)$, which in
-this case would return \ana{<vblex>.*\# out}. Say $L$ is the FST of
-all states before $t$, and $R$ all states after $t$; because of how
-the lttoolbox compiler works, and how the dictionary DTD is specified,
-there can be no transition into states $R$ except through $t$, nor a
-transition from $R$ back into the states $L$. The bilingual FST is $B$
-is the concatenation of these FST's, connected by a \# symbol: $B = L
-\# R$. After $copyWithTagsFirst(t)$ has returned a new $R'$ where the
-uniflected lemma parts are moved after the tags, we have $B = L R'$
-(there may now be several \#-transitions in $R'$).
+this case would return \ana{<vblex>.*\# out}.
 
 This function traverses the FST from the target of $t$ (in the example
 above, the state before the space), building up two new transducers,
-$R'$ and $lemq$. Until we see the first tag, we add all transitions
+$new$ and $lemq$. Until we see the first tag, we add all transitions
 found to $lemq$, and record in a search state which was the last
 $lemq$ state we saw. In the example above, we would build up a $lemq$
 transducer containing \ana{ out} (with an initial space). Upon seeing
 the first tag, we start adding transitions from the initial state of
-$R'$.
+$new$.
 
 When reaching a final tag state $s$, we add it and the last seen
 $lemq$ state $l$ to a list of pairs $f$. After the traversal is done,
 we loop through each $(s,l)$ in $f$, creating a temporary copy of
 $lemq$ where the $lemq$-state $l$ has been made the only final state,
-and adding a \#-transition from each final tag state $s$ in $R'$ into
+and adding a \#-transition from each final tag state $s$ in $new$ into
 that copy. In the example, we would make a copy of $lemq$ where the
 state after the letter \ana{t} were made final, and insert that copy
 after the final state $s$, the state after the
@@ -489,12 +481,12 @@ after the final state $s$, the state after the
   various first tag states, but we only connect those paths which were
   connected in the original bilingual dictionary.}
 
-Finally, we return $R'$ from $copyWithTagsFirst$ and look for the next
+Finally, we return $new$ from $copyWithTagsFirst$ and look for the next
 \# in $B$.
 
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[scale=0.5]{bi.eps}
+    \includegraphics[scale=0.7]{bi.eps}
     \caption{Input bilingual FST}
     \label{fig:bi-prefixed}
   \end{center}
@@ -502,7 +494,7 @@ Finally, we return $R'$ from $copyWithTagsFirst$ and look for the next
 
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[scale=0.5]{bi-prefixed.eps}
+    \includegraphics[scale=0.7]{bi-prefixed.eps}
     \caption{Fully preprocessed bilingual FST}
     \label{fig:bi-prefixed}
   \end{center}
@@ -559,7 +551,7 @@ which the \ana{+} was first encountered.
 % TODO: not enough space for these :-/
 % \begin{figure}[h]
 %   \begin{center}
-%     \includegraphics[scale=0.5]{mono.eps}
+%     \includegraphics[scale=0.7]{mono.eps}
 %     \caption{Input monolingual FST}
 %     \label{fig:mono}
 %   \end{center}
@@ -567,7 +559,7 @@ which the \ana{+} was first encountered.
 
 % \begin{figure}[h]
 %   \begin{center}
-%     \includegraphics[scale=0.5]{trimmed.eps}
+%     \includegraphics[scale=0.7]{trimmed.eps}
 %     \caption{Trimmed monolingual FST}
 %     \label{fig:trimmed}
 %   \end{center}
