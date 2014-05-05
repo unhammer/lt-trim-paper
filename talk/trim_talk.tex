@@ -1,0 +1,200 @@
+% Created 2009-05-08 Fri 15:22
+\documentclass[notes=hide]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage[english]{babel}
+\usepackage{apacite} % after babel
+\usepackage{natbib}
+\usepackage{pslatex}
+\pdfoutput=1
+
+\usepackage{enumerate}
+\usepackage{subfigure}
+\usepackage{linguex}
+
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage{graphicx}       % for \includegraphics, only works when {cslipubs} is [FINAL]
+\usepackage{amssymb}        % for \square
+
+\usetheme{Goettingen}
+%\setbeameroption{show notes}
+
+\newcommand{\ana}[1]{\texttt{#1}}
+\newcommand{\form}[1]{`#1'}
+\newcommand{\tool}[1]{\texttt{#1}}
+\newcommand{\fn}[1]{$\mathrm{#1}$}
+
+\title[lt-trim]{FST Trimming: Ending Dictionary Redundancy in Apertium}
+\author{Matthew Marting\inst{1} \and Kevin Brubeck Unhammer\inst{2}}
+\date{27th May 2014}
+\institute[apertium]{
+  \inst{1} St. David's School \\ Raleigh, NC. \\ {\tt \tiny $\emptyset{}$}
+  \and
+  \inst{2} Kaldera språkteknologi \\ Stavanger, Norway \\ {\tt \tiny unhammer+apertium@mm.st}
+}
+
+\begin{document}
+\maketitle
+
+
+\begin{frame}
+  \frametitle{Outline of talk}
+  \note{}
+\setcounter{tocdepth}{1}
+\tableofcontents[] % add pausesections? (one slide per \section)
+\setcounter{tocdepth}{3}
+\end{frame}
+
+\section{Introduction and background}
+\begin{frame}\frametitle{Introduction and background}
+  \note{}
+  \begin{itemize}
+    \item
+  \end{itemize}
+\end{frame}
+
+\subsection{FST's in the Apertium pipeline}
+\begin{frame}
+  \frametitle{FST's in the Apertium pipeline}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+\subsection{The Problem: Redundant data}
+\begin{frame}
+  \frametitle{The Problem: Redundant data}
+
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[scale=0.6]{../pairs-before.eps}
+      \caption{Current number of monodixes with pairs of four languages}
+      \label{fig:monodixes-current}
+    \end{center}
+  \end{figure}
+
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[scale=0.6]{../pairs-after.eps}
+      \caption{Ideal number of monodixes with four languages}
+      \label{fig:monodixes-ideally}
+    \end{center}
+  \end{figure}
+
+\end{frame}
+
+\subsection{A Solution: Intersection}
+\begin{frame}
+  \frametitle{A Solution: Intersection}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\section{Implementation of \tool{lt-trim}}
+\begin{frame}
+  \frametitle{Implementation of \tool{lt-trim}}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\subsection{Preprocessing the bilingual dictionary}
+\begin{frame}
+  \frametitle{Preprocessing the bilingual dictionary}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\subsection{Prefixing the bilingual dictionary}
+\begin{frame}
+  \frametitle{Prefixing the bilingual dictionary}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\subsection{Moving uninflected lemma parts}
+\begin{frame}
+  \frametitle{Moving uninflected lemma parts}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.7]{../bi.eps}
+    \caption{Input bilingual FST (letter transitions compressed to single arcs)}
+    \label{fig:bi-prefixed}
+  \end{center}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.7]{../bi-prefixed.eps}
+    \caption{Fully preprocessed bilingual FST; analyses \ana{take<vblex>\# out} and even \ana{take<vblex>+it<prn>\# out}    would be included after trimming on this}
+    \label{fig:bi-prefixed}
+  \end{center}
+\end{figure}
+
+\end{frame}
+
+\subsection{Intersection}
+\begin{frame}
+  \frametitle{Intersection}
+
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[scale=0.7]{../mono.eps}
+      \caption{Input monolingual FST}
+      \label{fig:mono}
+    \end{center}
+  \end{figure}
+
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[scale=0.7]{../trimmed.eps}
+      \caption{Trimmed monolingual FST}
+      \label{fig:trimmed}
+    \end{center}
+  \end{figure}
+
+\end{frame}
+
+\subsection{\tool{lt-trim} in use}
+\begin{frame}
+  \frametitle{\tool{lt-trim} in use}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\section{Ending Dictionary Redundancy}
+\begin{frame}
+  \frametitle{Ending Dictionary Redundancy}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}
+  \frametitle{Conclusion}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+\section*{Acknowledgements}
+\begin{frame}
+  \frametitle{Acknowledgements}
+  \begin{itemize}
+  \item
+  \end{itemize}
+\end{frame}
+
+
+
+\end{document}
