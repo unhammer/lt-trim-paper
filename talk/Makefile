@@ -1,6 +1,6 @@
 # From http://www.wlug.org.nz/LatexMakefiles
 TARGET=trim_talk
-FIGURES=pairs-before.eps pairs-after.eps mono.eps bi.eps bi-prefixed.eps trimmed.eps
+FIGURES=architecture.eps
 
 # make pdf by default
 all: ${TARGET}.pdf
@@ -23,7 +23,7 @@ ${TARGET}.bbl: apertium.bib
 %.eps: %.obj
 	tgif -print -eps $<
 
-${TARGET}.dvi: ${TARGET}.tex
+${TARGET}.dvi: ${TARGET}.tex ${FIGURES}
 	@latex ${TARGET}.tex
 
 # shortcut, so we can say "make ps"

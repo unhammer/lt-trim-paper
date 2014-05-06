@@ -52,18 +52,68 @@
 \begin{frame}\frametitle{Introduction and background}
   \note{}
   \begin{itemize}
-    \item
+    \item Apertium: Free/Open Source, Rule-based Machine Translation platform
+    \item Uses lttoolbox Finite State Transducers for:
+      \begin{itemize}
+      \item morph. analysis: \form{fishes} to \ana{fish<n><pl>/fish<vblex><pres>}
+      \item lex. transfer: \ana{fish<n><pl>} to \ana{fisk<n><m><pl><DD>}
+      \item morph. generation: \ana{fisk<n><m><pl><def>} to \form{fiskane}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
 \subsection{FST's in the Apertium pipeline}
 \begin{frame}
-  \frametitle{FST's in the Apertium pipeline}
+  \frametitle{Apertium pipeline architecture}
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[scale=0.8]{architecture.eps}
+      %\caption{The Apertium pipeline}
+      \label{fig:architecture}
+    \end{center}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiword support}
+  lttoolbox FST's support a variety of multiwords
+
+  ~ \\
+
+  An lttoolbox ``lexical unit'' is one token, and can be:
   \begin{itemize}
-  \item
+  \item simple non-multi-words: \form{fish}
+  \item simple space-separated words: \form{hairy frogfish} as a
+    single token
+  \item multiwords with \textbf{inner inflection}: \form{takes out}, \\
+    analysed as \ana{take<vblex><pri><p3><sg>\# out},\\
+    converted to \ana{take\# out<vblex><pri><p3><sg>} before lexical
+    transfer
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Multiword support}
+
+  \begin{itemize}
+  \item \textbf{joined} multiwords: \form{they'll}; \\
+    analysed as single token \ana{prpers<prn><subj><p3><mf><pl>+will<vaux><inf>}, \\
+    then split into two tokens \ana{prpers<prn><subj><p3><mf><pl>} and
+    \ana{will<vaux><inf>} before lexical transfer
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiword support}
+  \begin{itemize}
+  \item combinations of the 3 multiword types:
+    \form{creure-ho que},\\
+    analysed as single token \ana{creure<vblex><inf>+ho<prn><enc><p3><nt>\# que}, \\
+    then moved and split into two tokens \\
+    \ana{creure\# que<vblex><inf>} and \ana{ho<prn><enc><p3><nt>}
+    before lexical transfer
+  \end{itemize}
+\end{frame}
 
 \subsection{The Problem: Redundant data}
 \begin{frame}
