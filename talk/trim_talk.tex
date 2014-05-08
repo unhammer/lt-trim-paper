@@ -55,11 +55,18 @@
   \note{}
   \begin{itemize}
     \item Apertium: Free/Open Source, Rule-based Machine Translation platform
-    \item Uses lttoolbox Finite State Transducers for:
+    \item Goals include:
       \begin{itemize}
-      \item morph. analysis: \form{fishes} to \ana{fish<n><pl>/fish<vblex><pres>}
-      \item lex. transfer: \ana{fish<n><pl>} to \ana{fisk<n><m><pl><DD>}
-      \item morph. generation: \ana{fisk<n><m><pl><def>} to \form{fiskane}
+      \item supporting lesser-resourced languages
+      \item wide coverage
+      \item post-editable output
+      \item reusable resources
+      \end{itemize}
+    \item Language data (dictionaries, etc.) typically organised in
+      language \emph{pairs} (Catalan-Spanish, Portuguese-Spanish,
+      etc.)
+      \begin{itemize}
+      \item historically: each with its own copy of monolingual data
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -67,6 +74,14 @@
 \subsection{FST's in the Apertium pipeline}
 \begin{frame}
   \frametitle{Apertium pipeline architecture}
+  \begin{itemize}
+    \item lttoolbox Finite State Transducers used for, among others:
+      \begin{itemize}
+      \item morph. analysis: \form{fishes} to \ana{fish<n><pl>/fish<vblex><pres>}
+      \item lex. transfer: \ana{fish<n><pl>} to \ana{fisk<n><m><pl>}
+      \item morph. generation: \ana{fisk<n><m><pl><def>} to \form{fiskane}
+      \end{itemize}
+  \end{itemize}
   \begin{figure}[h]
     \begin{center}
       \includegraphics[scale=0.8]{architecture.eps}
@@ -102,13 +117,17 @@
     analysed as single token \ana{prpers<prn><subj><p3><mf><pl>+will<vaux><inf>}, \\
     then split into two tokens \ana{prpers<prn><subj><p3><mf><pl>} and
     \ana{will<vaux><inf>} before lexical transfer
+  \item \textbf{compounds}: \form{frogfish}; \\
+    analysed as single token \ana{frog<n><sg>+fish<n><pl>}, \\
+    then split into two tokens \ana{frog<n><sg>} and \ana{fish<n><pl>}
+    before lexical transfer
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Multiword support}
   \begin{itemize}
-  \item combinations of the 3 multiword types:
+  \item combinations (space-separated + joined + inner inflection):
     \form{creure-ho que},\\
     analysed as single token \ana{creure<vblex><inf>+ho<prn><enc><p3><nt>\# que}, \\
     then moved and split into two tokens \\
@@ -123,27 +142,56 @@
 
   \begin{figure}[h]
     \begin{center}
-      \includegraphics[scale=0.6]{../pairs-before.eps}
-      \caption{Current number of monodixes with pairs of four languages}
-      \label{fig:monodixes-current}
-    \end{center}
-  \end{figure}
-
-  \begin{figure}[h]
-    \begin{center}
       \includegraphics[scale=0.6]{../pairs-after.eps}
       \caption{Ideal number of monodixes with four languages}
       \label{fig:monodixes-ideally}
     \end{center}
   \end{figure}
 
+  \begin{figure}[h]
+    \begin{center}
+      \includegraphics[scale=0.6]{../pairs-before.eps}
+      \caption{Current number of monodixes with pairs of four languages}
+      \label{fig:monodixes-current}
+    \end{center}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+  Words in analyser but missing from lexical transfer can be
+  problematic:
+  \begin{itemize}
+  \item \form{fishes} to \form{@fish}: loses the inflection
+  \item \form{gikk til hundene} ``went to the dogs'' to
+    \form{went to @hund} ``went to dog'': losing the
+    inflection hides the idiomatic meaning
+  \item \form{öldürmedi} ``did not kill'' to \form{@öl} ``kill'':
+    loses the \emph{negation}
+  \item lexical transfer is also tag transfer – structural transfer
+    thus needs exceptions for half-translated tags
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  But, most importantly, multiword tokenisation means that
+
+  ~
+
+  \form{He takes out the trash} translates to \form{Han @take out
+    søpla} \emph{even though both \form{take}-\form{ta} and
+    \form{out}-\form{ut} are in the bilingual dictionary}.
+
+  ~
+
+  Adding more words makes the translator worse!
 \end{frame}
 
 \subsection{A Solution: Intersection}
 \begin{frame}
   \frametitle{A Solution: Intersection}
   \begin{itemize}
-  \item
+  \item FSA1 $\cup$ FSA2 = FSA3
   \end{itemize}
 \end{frame}
 
