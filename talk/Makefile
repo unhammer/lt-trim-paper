@@ -6,8 +6,9 @@ FIGURES=architecture.eps
 all: ${TARGET}.pdf
 
 # it doesn't really need the .dvi, but this way all the refs are right
-%.pdf : %.dvi
-	pdflatex $*
+%.pdf : ${TARGET}.tex ${FIGURES}
+	latex $<
+	pdflatex $<
 
 ${TARGET}.bbl: apertium.bib
 # in case we don't already have a .aux file listing citations
@@ -17,23 +18,16 @@ ${TARGET}.bbl: apertium.bib
 # get the citations out of the bibliography
 	bibtex ${TARGET}
 # do it again in case there are out-of-order cross-references
-	@latex ${TARGET}.tex
+	latex ${TARGET}.tex
 
 # Figures printable with tgif:
 %.eps: %.obj
 	tgif -print -eps $<
 
-${TARGET}.dvi: ${TARGET}.tex ${FIGURES}
-	@latex ${TARGET}.tex
 
-# shortcut, so we can say "make ps"
-ps: ${TARGET}.ps
-
-${TARGET}.ps: ${TARGET}.dvi
-	@dvips -t a4 ${TARGET}.dvi
 
 clean:
-	rm -f ${TARGET}.{log,aux,ps,dvi,bbl,blg,log} ${FIGURES}.eps
+	rm -f ${TARGET}.{log,aux,ps,dvi,bbl,blg,log,toc,snm,nav,out} ${FIGURES}
 	rm -rf auto/
 
 reallyclean: clean
