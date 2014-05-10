@@ -85,8 +85,6 @@
   \begin{figure}[h]
     \begin{center}
       \includegraphics[scale=0.8]{architecture.eps}
-      %\caption{The Apertium pipeline}
-      \label{fig:architecture}
     \end{center}
   \end{figure}
 \end{frame}
@@ -140,21 +138,17 @@
 \begin{frame}
   \frametitle{The Problem: Redundant data}
 
-  \begin{figure}[h]
-    \begin{center}
+  \begin{center}
+    \begin{figure}[h]
       \includegraphics[scale=0.6]{../pairs-after.eps}
-      \caption{Ideal number of monodixes with four languages}
-      \label{fig:monodixes-ideally}
-    \end{center}
-  \end{figure}
+    \end{figure}
+    \small{Ideal number of monodixes with four languages}
 
-  \begin{figure}[h]
-    \begin{center}
+    \begin{figure}[h]
       \includegraphics[scale=0.6]{../pairs-before.eps}
-      \caption{Current number of monodixes with pairs of four languages}
-      \label{fig:monodixes-current}
-    \end{center}
-  \end{figure}
+    \end{figure}
+    \small{Current number of monodixes with pairs of four languages}
+  \end{center}
 
 \end{frame}
 
@@ -187,28 +181,35 @@
   Adding more words makes the translator worse!
 \end{frame}
 
-\subsection{A Solution: Intersection}
+\subsection{A Solution: trim on compile}
 \begin{frame}
-  \frametitle{A Solution: Intersection}
+  \frametitle{A Solution: trim on compile}
   Compile a \emph{trimmed} analyser-FST containing only those entries
   from original analyser FST that would pass through bilingual FST.
+
+  ~\\
+
+  \begin{itemize}
+  \item FSA's closed under intersection: FSA1 $\cap$ FSA2 = FSA3
+  \item Similarly, we can compose-intersect FST's:\\
+    output-side of FST1 $\cap$ input-side of FST2 = FST3
+  \end{itemize}
 
   ~\\
 
   Goal: One big monolingual source dictionary, trimmed during compile
   to language-pair specific analysers.
 
-  ~\\
+  Dictionaries in HFST instead of lttoolbox can trim already (but it
+  breaks with compounds!).
 
-  \begin{itemize}
-  \item We know we can do: FSA1 $\cap$ FSA2 = FSA3
-  \item We want: output of FST1 $\cap$ input of FST2 = FST3
-  \end{itemize}
+  Most Apertium dictionaries use lttoolbox.
+
 
 \end{frame}
 
 \begin{frame}
-  With some exceptions:
+  Our tool needs some exceptions to compose-intersect:
   \begin{itemize}
   \item Append $.*$ (any-symbol loop) to bilingual FST
     \begin{itemize}
@@ -254,11 +255,11 @@
   \frametitle{Prefixing bilingual FST}
   \begin{center}
     \begin{figure}[h]
-      \includegraphics[scale=0.6]{../bi.eps}
+      \includegraphics[scale=0.6]{bi.eps}
     \end{figure}
     \scriptsize{Input bilingual FST (letter transitions compressed to single arcs)}
     \begin{figure}[h]
-      \includegraphics[scale=0.6]{bi-beforemove.eps}
+      \includegraphics[scale=0.6]{bi-prefixed.eps}
     \end{figure}
     \scriptsize{``Prefixed'' bilingual FST (any-symbol loop appended)}
   \end{center}
@@ -266,12 +267,13 @@
 
 \begin{frame}
   \frametitle{Moving uninflected lemma parts in bilingual FST}
-  Want: \ana{take\# out<vblex>} to become \ana{take<vblex>\# out} and so 
+  Want \ana{take\# out<vblex>} to become \ana{take<vblex>\# out}, so 
   \begin{enumerate}
-  \item Do a depth-first traversal
+  \item Depth-first traverse bilingual FST
   \item On seeing a \#, replace the transition $t$ with results of \fn{copyWithTagsFirst(t)}
-  \item This function builds a new partial FST where tag
-    sequence and uninflected lemma part are reordered
+  \item Function \fn{copyWithTagsFirst(t)} builds a new partial FST
+    where any tag sequence and uninflected lemma parts have swapped
+    places
   \end{enumerate}
 \end{frame}
 
@@ -279,11 +281,11 @@
   \frametitle{Moving uninflected lemma parts in bilingual FST}
   \begin{center}
     \begin{figure}[h]
-      \includegraphics[scale=0.6]{bi-beforemove.eps}
+      \includegraphics[scale=0.6]{bi-prefixed.eps}
     \end{figure}
 
     \begin{figure}[h]
-      \includegraphics[scale=0.6]{../bi-prefixed.eps}
+      \includegraphics[scale=0.6]{bi-prefixed-moved.eps}
     \end{figure}
     \scriptsize{Fully preprocessed; now matches both \ana{take<vblex>\# out} and \ana{take<vblex>+it<prn>\# out} (assuming special +-handling) }
   \end{center}
@@ -294,37 +296,68 @@
 \subsection{Intersection}
 \begin{frame}
   \frametitle{Intersection}
-  \begin{figure}[h]
-    \begin{center}
-      \includegraphics[scale=0.7]{../mono.eps}
-      \caption{Input monolingual FST}
-      \label{fig:mono}
-    \end{center}
-  \end{figure}
+  \begin{center}
 
-  \begin{figure}[h]
-    \begin{center}
-      \includegraphics[scale=0.7]{../trimmed.eps}
-      \caption{Trimmed monolingual FST}
-      \label{fig:trimmed}
-    \end{center}
-  \end{figure}
+    \begin{figure}[h]
+      \includegraphics[scale=0.7]{mono-simple.eps}
+    \end{figure}
+    \scriptsize{Input analyser}
 
+    \begin{figure}[h]
+      \includegraphics[scale=0.7]{trimmed-simple.eps}
+    \end{figure}
+    \scriptsize{Trimmed analyser}
+
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Intersection}
+  \begin{center}
+
+    \begin{figure}[h]
+      \includegraphics[scale=0.7]{mono.eps}
+    \end{figure}
+    \scriptsize{Input analyser}
+
+    \begin{figure}[h]
+      \includegraphics[scale=0.7]{trimmed.eps}
+    \end{figure}
+    \scriptsize{Trimmed analyser}
+
+  \end{center}
 \end{frame}
 
 \subsection{\tool{lt-trim} in use}
 \begin{frame}
   \frametitle{\tool{lt-trim} in use}
-  \begin{itemize}
-  \item
-  \end{itemize}
+  \tool{\$ lt-trim full-ana.bin bi.bin trimmed-ana.bin}
+
+  ~\\
+
+  (But language pair developers typically just type ``make''.)
+
+  ~\\
+
+  Speed and memory usage is comparable to regular lttoolbox
+  (\tool{lt-comp}) compiling.
 \end{frame}
 
 \section{Ending Dictionary Redundancy}
 \begin{frame}
   \frametitle{Ending Dictionary Redundancy}
   \begin{itemize}
-  \item
+  \item New Autotools rules let us formally depend on monolingual data
+    packages
+  \item All new languages added to Apertium use this system – no
+    monolingual data redundancy
+  \item But: Implementing trimming in old/well-developed language
+    pairs means manual merging – divergent dictionaries problematic
+    \begin{itemize}
+    \item Merging Norwegian Bokmål between sme-nob and nno-nob: about
+      3 hrs work
+    \item dan-nob added further 3 hrs
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -332,18 +365,17 @@
 \begin{frame}
   \frametitle{Conclusion}
   \begin{itemize}
-  \item
+  \item \tool{lt-trim} works
+  \item Monolingual data now in a single /languages/ SVN module,
+    easier for other projects to find and use our data \\
+
+  \item Next up: special-purpose HFST trimming tool to get around
+    compounding problem?
+  \item Still much manual merge work to be done
   \end{itemize}
 \end{frame}
 
-\section*{Acknowledgements}
-\begin{frame}
-  \frametitle{Acknowledgements}
-  \begin{itemize}
-  \item
-  \end{itemize}
-\end{frame}
-
+% TODO: Thanks for listening-slide? 
 
 
 \end{document}
