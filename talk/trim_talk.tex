@@ -190,16 +190,50 @@
 \subsection{A Solution: Intersection}
 \begin{frame}
   \frametitle{A Solution: Intersection}
+  Compile a \emph{trimmed} analyser-FST containing only entries from
+  monolingual FST that would pass through bilingual FST.
+
+  ~\\
+
+  Goal: One big monolingual dictionary, trimmed during compile to
+  language-pair specific analysers.
+
+  ~\\
+
   \begin{itemize}
-  \item FSA1 $\cup$ FSA2 = FSA3
+  \item We know we can do: FSA1 $\cap$ FSA2 = FSA3
+  \item We want: output of FST1 $\cap$ input of FST2 = FST3
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  With some exceptions:
+  \begin{itemize}
+    \item First need to append $.*$ to FST2 \\(because lexical transfer only needs
+      a match on the start of the string)
+    \item And reorder \#-multiwords in FST2 \\(so they look
+      like FST1, otherwise they won't match)
+    \item And let a + in FST1 mean transition-to-start in FST2 \\(since
+      single token \ana{a+b} in FST1 is split into two tokens \ana{a} \ana{b} before
+      lexical transfer)
   \end{itemize}
 \end{frame}
 
 \section{Implementation of \tool{lt-trim}}
 \begin{frame}
   \frametitle{Implementation of \tool{lt-trim}}
+  Tool takes two compiled FST's, produces a new, \emph{trimmed} FST
   \begin{itemize}
-  \item
+  \item Preprocess bilingual FST
+    \begin{itemize}
+    \item Append $.*$
+    \item Reorder \#-multiwords
+    \end{itemize}
+  \item Depth-first intersection of output of FST1 with input of FST2
+    \begin{itemize}
+    \item with an exception on seeing +
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
