@@ -1,6 +1,6 @@
 # From http://www.wlug.org.nz/LatexMakefiles
 TARGET=trim_talk
-FIGURES=architecture.eps
+FIGURES=architecture.eps bi-beforemove.eps
 
 # make pdf by default
 all: ${TARGET}.pdf

@@ -190,13 +190,13 @@
 \subsection{A Solution: Intersection}
 \begin{frame}
   \frametitle{A Solution: Intersection}
-  Compile a \emph{trimmed} analyser-FST containing only entries from
-  monolingual FST that would pass through bilingual FST.
+  Compile a \emph{trimmed} analyser-FST containing only those entries
+  from original analyser FST that would pass through bilingual FST.
 
   ~\\
 
-  Goal: One big monolingual dictionary, trimmed during compile to
-  language-pair specific analysers.
+  Goal: One big monolingual source dictionary, trimmed during compile
+  to language-pair specific analysers.
 
   ~\\
 
@@ -210,13 +210,24 @@
 \begin{frame}
   With some exceptions:
   \begin{itemize}
-    \item First need to append $.*$ to FST2 \\(because lexical transfer only needs
-      a match on the start of the string)
-    \item And reorder \#-multiwords in FST2 \\(so they look
-      like FST1, otherwise they won't match)
-    \item And let a + in FST1 mean transition-to-start in FST2 \\(since
-      single token \ana{a+b} in FST1 is split into two tokens \ana{a} \ana{b} before
-      lexical transfer)
+  \item Append $.*$ (any-symbol loop) to bilingual FST
+    \begin{itemize}
+    \item Lexical transfer only needs a match on the start of the
+      string
+    \end{itemize}
+
+  \item Reorder \ana{\#}-multiwords in bilingual FST
+    \begin{itemize}
+    \item so they look like analyser (else they won't match)
+    \end{itemize}
+
+  \item Let \ana{+} in analyser mean transition-to-start in bilingual
+    FST
+    \begin{itemize}
+    \item since single token \ana{a+b} in analyser is split into two
+      tokens \ana{a} \ana{b} before lexical transfer
+    \end{itemize}
+
   \end{itemize}
 \end{frame}
 
@@ -224,61 +235,65 @@
 \begin{frame}
   \frametitle{Implementation of \tool{lt-trim}}
   Tool takes two compiled FST's, produces a new, \emph{trimmed} FST
-  \begin{itemize}
+  \begin{enumerate}
   \item Preprocess bilingual FST
-    \begin{itemize}
-    \item Append $.*$
+    \begin{enumerate}
+    \item ``Prefixing'': Append any-symbol loop
     \item Reorder \#-multiwords
-    \end{itemize}
-  \item Depth-first intersection of output of FST1 with input of FST2
+    \end{enumerate}
+  \item Depth-first intersection of output-side of analyser with
+    input-side of bilingual FST
     \begin{itemize}
     \item with an exception on seeing +
     \end{itemize}
-  \end{itemize}
+  \end{enumerate}
 \end{frame}
 
 \subsection{Preprocessing the bilingual dictionary}
 \begin{frame}
-  \frametitle{Preprocessing the bilingual dictionary}
-  \begin{itemize}
-  \item
-  \end{itemize}
-\end{frame}
-
-\subsection{Prefixing the bilingual dictionary}
-\begin{frame}
-  \frametitle{Prefixing the bilingual dictionary}
-  \begin{itemize}
-  \item
-  \end{itemize}
-\end{frame}
-
-\subsection{Moving uninflected lemma parts}
-\begin{frame}
-  \frametitle{Moving uninflected lemma parts}
-
-\begin{figure}[h]
+  \frametitle{Prefixing bilingual FST}
   \begin{center}
-    \includegraphics[scale=0.7]{../bi.eps}
-    \caption{Input bilingual FST (letter transitions compressed to single arcs)}
-    \label{fig:bi-prefixed}
+    \begin{figure}[h]
+      \includegraphics[scale=0.6]{../bi.eps}
+    \end{figure}
+    \scriptsize{Input bilingual FST (letter transitions compressed to single arcs)}
+    \begin{figure}[h]
+      \includegraphics[scale=0.6]{bi-beforemove.eps}
+    \end{figure}
+    \scriptsize{``Prefixed'' bilingual FST (any-symbol loop appended)}
   \end{center}
-\end{figure}
+\end{frame}
 
-\begin{figure}[h]
+\begin{frame}
+  \frametitle{Moving uninflected lemma parts in bilingual FST}
+  Want: \ana{take\# out<vblex>} to become \ana{take<vblex>\# out} and so 
+  \begin{enumerate}
+  \item Do a depth-first traversal
+  \item On seeing a \#, replace the transition $t$ with results of \fn{copyWithTagsFirst(t)}
+  \item This function builds a new partial FST where tag
+    sequence and uninflected lemma part are reordered
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Moving uninflected lemma parts in bilingual FST}
   \begin{center}
-    \includegraphics[scale=0.7]{../bi-prefixed.eps}
-    \caption{Fully preprocessed bilingual FST; analyses \ana{take<vblex>\# out} and even \ana{take<vblex>+it<prn>\# out}    would be included after trimming on this}
-    \label{fig:bi-prefixed}
+    \begin{figure}[h]
+      \includegraphics[scale=0.6]{bi-beforemove.eps}
+    \end{figure}
+
+    \begin{figure}[h]
+      \includegraphics[scale=0.6]{../bi-prefixed.eps}
+    \end{figure}
+    \scriptsize{Fully preprocessed; now matches both \ana{take<vblex>\# out} and \ana{take<vblex>+it<prn>\# out} (assuming special +-handling) }
   \end{center}
-\end{figure}
 
 \end{frame}
+
 
 \subsection{Intersection}
 \begin{frame}
   \frametitle{Intersection}
-
   \begin{figure}[h]
     \begin{center}
       \includegraphics[scale=0.7]{../mono.eps}
