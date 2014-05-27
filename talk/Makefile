@@ -1,6 +1,6 @@
 # From http://www.wlug.org.nz/LatexMakefiles
 TARGET=trim_talk
-FIGURES=architecture.eps bi.eps bi-prefixed.eps bi-prefixed-moved.eps mono-simple.eps trimmed-simple-1.eps trimmed-simple-2.eps trimmed-simple-3.eps trimmed-simple-4.eps trimmed-simple.eps mono.eps trimmed.eps
+FIGURES=architecture.eps bi.eps bi-prefixed.eps bi-prefixed-moved.eps mono-simple.eps trimmed-simple-1.eps trimmed-simple-2.eps trimmed-simple-3.eps trimmed-simple-4.eps trimmed-simple.eps mono.eps trimmed.eps apertium-www.eps
 
 # make pdf by default
 all: ${TARGET}.pdf
